@@ -75,3 +75,4 @@ export function PosterUpload({ value, onChange, disabled }: PosterUploadProps) {
     </div>
   );
 }
+

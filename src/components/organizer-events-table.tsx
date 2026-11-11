@@ -285,3 +285,4 @@ export function OrganizerEventsTable({ data }: OrganizerEventsTableProps) {
     </div>
   );
 }
+

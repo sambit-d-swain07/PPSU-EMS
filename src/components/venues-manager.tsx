@@ -233,3 +233,4 @@ export function VenuesManager({ venues }: VenuesManagerProps) {
     </div>
   );
 }
+

@@ -356,3 +356,4 @@ export function EventForm({ venues, eventId, initialData }: EventFormProps) {
     </div>
   );
 }
+

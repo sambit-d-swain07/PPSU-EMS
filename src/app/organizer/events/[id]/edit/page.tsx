@@ -90,3 +90,4 @@ export default async function EditEventPage({ params }: EditEventPageProps) {
     </div>
   );
 }
+
