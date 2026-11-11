@@ -15,6 +15,22 @@ enum Role {
   STUDENT
 }
 
+enum EventCategory {
+  TECHNICAL
+  CULTURAL
+  SPORTS
+  WORKSHOP
+  SEMINAR
+  OTHER
+}
+
+enum EventStatus {
+  DRAFT
+  PENDING
+  APPROVED
+  REJECTED
+}
+
 model User {
   id           String   @id @default(cuid())
   name         String
@@ -24,4 +40,36 @@ model User {
   department   String?
   isActive     Boolean  @default(true)
   createdAt    DateTime @default(now())
+
+  organizedEvents Event[] @relation("OrganizerEvents")
+  reviewedEvents  Event[] @relation("ReviewerEvents")
+}
+
+model Venue {
+  id       String  @id @default(cuid())
+  name     String  @unique
+  capacity Int
+  events   Event[]
+}
+
+model Event {
+  id           String        @id @default(cuid())
+  title        String
+  description  String
+  category     EventCategory
+  posterUrl    String?
+  venueId      String
+  startsAt     DateTime
+  endsAt       DateTime
+  capacity     Int
+  status       EventStatus   @default(DRAFT)
+  reviewRemark String?
+  organizerId  String
+  reviewedById String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  venue      Venue  @relation(fields: [venueId], references: [id])
+  organizer  User   @relation("OrganizerEvents", fields: [organizerId], references: [id])
+  reviewedBy User?  @relation("ReviewerEvents", fields: [reviewedById], references: [id])
 }

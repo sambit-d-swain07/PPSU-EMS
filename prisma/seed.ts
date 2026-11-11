@@ -47,6 +47,24 @@ async function main() {
   }
 
   console.log(`Seeded ${records.length} users successfully.`);
+
+  const venues = [
+    { name: "Main Auditorium", capacity: 1200 },
+    { name: "Seminar Hall A", capacity: 150 },
+    { name: "Seminar Hall B", capacity: 150 },
+    { name: "Sports Complex", capacity: 500 },
+    { name: "Open Air Theatre", capacity: 800 },
+  ];
+
+  for (const venue of venues) {
+    await prisma.venue.upsert({
+      where: { name: venue.name },
+      update: { capacity: venue.capacity },
+      create: venue,
+    });
+  }
+
+  console.log(`Seeded ${venues.length} venues successfully.`);
 }
 
 main()
@@ -57,4 +75,3 @@ main()
   .finally(async () => {
     await prisma.$disconnect();
   });
-
