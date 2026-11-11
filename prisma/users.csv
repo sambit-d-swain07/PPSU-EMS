@@ -1,0 +1,7 @@
+name,email,password,role,department
+Alice Admin,admin@university.edu,AdminPass123!,ADMIN,Administration
+Oliver Organizer,organizer@university.edu,OrganizerPass123!,ORGANIZER,Student Affairs
+Fiona Faculty,faculty@university.edu,FacultyPass123!,FACULTY,Computer Science
+Sam Student,student1@university.edu,StudentPass123!,STUDENT,Engineering
+Sara Student,student2@university.edu,StudentPass123!,STUDENT,Business
+
