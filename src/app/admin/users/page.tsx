@@ -6,6 +6,7 @@ import { UsersTable } from "@/components/users/users-table";
 import { UserFilters } from "@/components/users/user-filters";
 import { CreateUserDialog } from "@/components/users/create-user-dialog";
 import { ImportCsvDialog } from "@/components/users/import-csv-dialog";
+import { PixelHeading } from "@/components/ui-theme/pixel-heading";
 import { Prisma, Role } from "@prisma/client";
 
 interface UsersPageProps {
@@ -61,7 +62,7 @@ export default async function AdminUsersPage({ searchParams }: UsersPageProps) {
   ]);
 
   return (
-    <div className="min-h-screen bg-slate-50/50">
+    <div className="min-h-screen">
       <AppNavbar
         userName={session.user.name || "Administrator"}
         role="ADMIN"
@@ -71,16 +72,12 @@ export default async function AdminUsersPage({ searchParams }: UsersPageProps) {
 
       <main className="max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
-              User Directory & Accounts
-            </h1>
-            <p className="text-xs sm:text-sm text-muted-foreground">
-              Manage student, organizer, and administrator accounts and portal credentials.
-            </p>
-          </div>
+          <PixelHeading
+            title="USER DIRECTORY"
+            caption="manage student, organizer & administrator accounts"
+          />
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 self-start sm:self-auto">
             <ImportCsvDialog />
             <CreateUserDialog />
           </div>

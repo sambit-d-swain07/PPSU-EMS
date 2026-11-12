@@ -1,10 +1,9 @@
 import { Skeleton } from "@/components/ui/skeleton";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
 export default function AdminLoading() {
   return (
-    <div className="min-h-screen bg-slate-50/50">
-      <header className="border-b bg-white">
+    <div className="min-h-screen bg-paper">
+      <header className="border-b-2 border-ink bg-paper">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <Skeleton className="h-8 w-48" />
           <Skeleton className="h-9 w-20" />
@@ -22,33 +21,24 @@ export default function AdminLoading() {
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
           {Array.from({ length: 6 }).map((_, i) => (
-            <Card key={i}>
-              <CardHeader className="pb-2">
-                <Skeleton className="h-4 w-20" />
-              </CardHeader>
-              <CardContent className="space-y-2">
-                <Skeleton className="h-7 w-16" />
-                <Skeleton className="h-3 w-28" />
-              </CardContent>
-            </Card>
+            <div key={i} className="border-2 border-ink rounded-[3px] p-4 space-y-2">
+              <Skeleton className="h-4 w-20" />
+              <Skeleton className="h-7 w-16" />
+              <Skeleton className="h-3 w-28" />
+            </div>
           ))}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {Array.from({ length: 4 }).map((_, i) => (
-            <Card key={i}>
-              <CardHeader className="pb-2">
-                <Skeleton className="h-4 w-36" />
-                <Skeleton className="h-3 w-48" />
-              </CardHeader>
-              <CardContent>
-                <Skeleton className="h-56 w-full" />
-              </CardContent>
-            </Card>
+            <div key={i} className="border-2 border-ink rounded-[3px] p-4 space-y-3">
+              <Skeleton className="h-4 w-36" />
+              <Skeleton className="h-3 w-48" />
+              <Skeleton className="h-56 w-full" />
+            </div>
           ))}
         </div>
       </main>
     </div>
   );
 }
-

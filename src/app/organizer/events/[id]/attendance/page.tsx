@@ -1,11 +1,8 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { AttendanceScanner } from "@/components/attendance-scanner";
-import { LogoutButton } from "@/components/logout-button";
+import { AppNavbar } from "@/components/app-navbar";
 import { notFound, redirect } from "next/navigation";
-import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
-import { Button } from "@/components/ui/button";
 
 interface AttendancePageProps {
   params: Promise<{ id: string }>;
@@ -54,28 +51,12 @@ export default async function AttendancePage({ params }: AttendancePageProps) {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50/50">
-      <header className="border-b bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Button variant="ghost" size="sm" asChild className="h-8 gap-1 text-xs">
-              <Link href="/organizer">
-                <ArrowLeft className="h-4 w-4" /> Back to Events
-              </Link>
-            </Button>
-            <div className="h-4 w-px bg-slate-200" />
-            <h1 className="text-base font-semibold text-slate-900 truncate max-w-sm sm:max-w-md">
-              Check-in & Attendance
-            </h1>
-          </div>
-          <div className="flex items-center gap-3">
-            <span className="text-xs text-muted-foreground hidden sm:inline">
-              {session.user.name} ({session.user.role})
-            </span>
-            <LogoutButton />
-          </div>
-        </div>
-      </header>
+    <div className="min-h-screen">
+      <AppNavbar
+        userName={session.user.name || "Organizer"}
+        role={session.user.role}
+        subtitle="Attendance & Check-in"
+      />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <AttendanceScanner

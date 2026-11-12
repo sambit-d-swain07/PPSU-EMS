@@ -64,57 +64,57 @@ export function CreateUserDialog() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button size="sm" className="h-9 text-xs">
-          <UserPlus className="h-3.5 w-3.5 mr-1.5" /> Add Single User
+        <Button size="sm" variant="yellow" className="h-9 text-xs">
+          <UserPlus className="h-3.5 w-3.5 mr-1.5" /> ADD USER
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md border-2 border-ink bg-paper shadow-hard-lg">
         <DialogHeader>
-          <DialogTitle className="text-base font-bold text-slate-900">
-            Create New User Account
+          <DialogTitle className="font-pixel text-lg text-ink uppercase">
+            CREATE USER ACCOUNT
           </DialogTitle>
-          <DialogDescription className="text-xs">
+          <DialogDescription className="font-mono text-xs text-muted-ink">
             Add a university student, organizer, or admin. They will be prompted to change their password upon first login.
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-3.5 py-2">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-3.5 py-2 font-mono">
           <div className="space-y-1">
-            <Label htmlFor="name" className="text-xs font-semibold text-slate-700">
+            <Label htmlFor="name" className="text-xs font-bold uppercase text-ink">
               Full Name
             </Label>
             <Input
               id="name"
               placeholder="e.g. Alex Taylor"
-              className="h-8 text-xs"
+              className="h-8 text-xs font-mono border-2 border-ink"
               {...register("name")}
               disabled={isPending}
             />
             {errors.name && (
-              <p className="text-[11px] text-red-600">{errors.name.message}</p>
+              <p className="text-[11px] text-[#E8573A]">{errors.name.message}</p>
             )}
           </div>
 
           <div className="space-y-1">
-            <Label htmlFor="email" className="text-xs font-semibold text-slate-700">
+            <Label htmlFor="email" className="text-xs font-bold uppercase text-ink">
               Email Address
             </Label>
             <Input
               id="email"
               type="email"
               placeholder="e.g. ataylor@university.edu"
-              className="h-8 text-xs"
+              className="h-8 text-xs font-mono border-2 border-ink"
               {...register("email")}
               disabled={isPending}
             />
             {errors.email && (
-              <p className="text-[11px] text-red-600">{errors.email.message}</p>
+              <p className="text-[11px] text-[#E8573A]">{errors.email.message}</p>
             )}
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1">
-              <Label className="text-xs font-semibold text-slate-700">
+              <Label className="text-xs font-bold uppercase text-ink">
                 Assigned Role
               </Label>
               <Select
@@ -123,7 +123,7 @@ export function CreateUserDialog() {
                   setValue("role", val)
                 }
               >
-                <SelectTrigger className="h-8 text-xs">
+                <SelectTrigger className="h-8 text-xs font-mono border-2 border-ink bg-paper">
                   <SelectValue placeholder="Select role" />
                 </SelectTrigger>
                 <SelectContent>
@@ -133,18 +133,18 @@ export function CreateUserDialog() {
                 </SelectContent>
               </Select>
               {errors.role && (
-                <p className="text-[11px] text-red-600">{errors.role.message}</p>
+                <p className="text-[11px] text-[#E8573A]">{errors.role.message}</p>
               )}
             </div>
 
             <div className="space-y-1">
-              <Label htmlFor="department" className="text-xs font-semibold text-slate-700">
+              <Label htmlFor="department" className="text-xs font-bold uppercase text-ink">
                 Department
               </Label>
               <Input
                 id="department"
                 placeholder="e.g. Computer Science"
-                className="h-8 text-xs"
+                className="h-8 text-xs font-mono border-2 border-ink"
                 {...register("department")}
                 disabled={isPending}
               />
@@ -152,19 +152,19 @@ export function CreateUserDialog() {
           </div>
 
           <div className="space-y-1">
-            <Label htmlFor="password" className="text-xs font-semibold text-slate-700">
+            <Label htmlFor="password" className="text-xs font-bold uppercase text-ink">
               Temporary Password
             </Label>
             <Input
               id="password"
               type="password"
               placeholder="Min 8 characters"
-              className="h-8 text-xs"
+              className="h-8 text-xs font-mono border-2 border-ink"
               {...register("password")}
               disabled={isPending}
             />
             {errors.password && (
-              <p className="text-[11px] text-red-600">{errors.password.message}</p>
+              <p className="text-[11px] text-[#E8573A]">{errors.password.message}</p>
             )}
           </div>
 
@@ -178,8 +178,8 @@ export function CreateUserDialog() {
             >
               Cancel
             </Button>
-            <Button type="submit" size="sm" disabled={isPending}>
-              {isPending ? "Creating..." : "Create User"}
+            <Button type="submit" variant="yellow" size="sm" disabled={isPending}>
+              {isPending ? "CREATING..." : "CREATE USER"}
             </Button>
           </DialogFooter>
         </form>

@@ -4,25 +4,33 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+  "inline-flex items-center justify-center whitespace-nowrap rounded-[3px] border-2 border-ink font-mono-label transition-all active:translate-x-[1px] active:translate-y-[1px] disabled:pointer-events-none disabled:opacity-50 select-none cursor-pointer",
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground shadow hover:bg-primary/90",
+        default:
+          "bg-ink text-white hover:-translate-y-0.5 hover:shadow-hard",
         destructive:
-          "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90",
+          "bg-[#F0508C] text-white hover:-translate-y-0.5 hover:shadow-hard-pink",
         outline:
-          "border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground",
+          "bg-white text-ink hover:bg-paper hover:-translate-y-0.5 hover:shadow-hard-sm",
         secondary:
-          "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
-        link: "text-primary underline-offset-4 hover:underline",
+          "bg-[#EFE6D2] text-ink hover:-translate-y-0.5 hover:shadow-hard-sm",
+        yellow:
+          "bg-[#F6C945] text-ink hover:-translate-y-0.5 hover:shadow-hard",
+        green:
+          "bg-[#19A860] text-white hover:-translate-y-0.5 hover:shadow-hard",
+        ghost:
+          "border-transparent hover:bg-black/5 hover:border-ink/30",
+        link:
+          "border-transparent text-ink underline-offset-4 hover:underline",
       },
       size: {
         default: "h-9 px-4 py-2",
-        sm: "h-8 rounded-md px-3 text-xs",
-        lg: "h-10 rounded-md px-8",
-        icon: "h-9 w-9",
+        sm: "h-8 px-3 text-[11px]",
+        lg: "h-10 px-6 text-xs",
+        icon: "h-8 w-8 p-0",
+        "icon-sm": "h-6 w-6 p-0 text-[10px]",
       },
     },
     defaultVariants: {
@@ -53,4 +61,3 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 Button.displayName = "Button";
 
 export { Button, buttonVariants };
-

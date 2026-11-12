@@ -9,7 +9,7 @@ import {
   Tooltip,
   CartesianGrid,
 } from "recharts";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Folder } from "@/components/ui-theme/folder";
 
 interface LineChartCardProps {
   title: string;
@@ -25,22 +25,22 @@ export function LineChartCard({
   description,
   data,
   dataKeys,
-  height = 260,
-  emptyMessage = "No trend data available",
+  height = 240,
+  emptyMessage = "No trend data recorded",
 }: LineChartCardProps) {
   const hasData = data && data.length > 0;
 
   return (
-    <Card className="border border-slate-200 shadow-2xs">
-      <CardHeader className="pb-3">
-        <CardTitle className="text-sm font-semibold text-slate-900">{title}</CardTitle>
-        {description && <CardDescription className="text-xs">{description}</CardDescription>}
-      </CardHeader>
-      <CardContent>
+    <Folder tab={title.toUpperCase()} tabSide="right" color="paper" className="h-full">
+      <div className="space-y-2">
+        {description && (
+          <p className="text-xs font-hand text-muted-ink pb-1">{description}</p>
+        )}
+
         {!hasData ? (
           <div
             style={{ height }}
-            className="flex items-center justify-center text-xs text-muted-foreground border border-dashed rounded-lg bg-slate-50/50"
+            className="flex items-center justify-center text-xs font-mono text-muted-ink border-2 border-dashed border-ink/20 rounded-[3px] bg-paper"
           >
             {emptyMessage}
           </div>
@@ -48,20 +48,21 @@ export function LineChartCard({
           <div style={{ width: "100%", height }}>
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={data} margin={{ top: 5, right: 10, left: -20, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                <CartesianGrid strokeDasharray="2 2" vertical={false} stroke="#111111" strokeOpacity={0.15} />
                 <XAxis
                   dataKey="name"
-                  tick={{ fontSize: 11, fill: "#64748b" }}
+                  tick={{ fontSize: 10, fill: "#111111", fontFamily: "var(--font-mono)" }}
                   tickLine={false}
                 />
-                <YAxis tick={{ fontSize: 11, fill: "#64748b" }} allowDecimals={false} />
+                <YAxis tick={{ fontSize: 10, fill: "#111111", fontFamily: "var(--font-mono)" }} allowDecimals={false} />
                 <Tooltip
                   contentStyle={{
                     backgroundColor: "#ffffff",
-                    borderColor: "#e2e8f0",
-                    borderRadius: "0.5rem",
-                    fontSize: "12px",
-                    boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
+                    border: "2px solid #111111",
+                    borderRadius: "3px",
+                    fontSize: "11px",
+                    fontFamily: "var(--font-mono)",
+                    boxShadow: "3px 3px 0 #111111",
                   }}
                 />
                 {dataKeys.map((dk) => (
@@ -70,17 +71,17 @@ export function LineChartCard({
                     type="monotone"
                     dataKey={dk.key}
                     name={dk.name || dk.key}
-                    stroke={dk.color || "#3b82f6"}
-                    strokeWidth={2}
-                    dot={{ r: 3, fill: dk.color || "#3b82f6" }}
-                    activeDot={{ r: 5 }}
+                    stroke={dk.color || "#2347D6"}
+                    strokeWidth={2.5}
+                    dot={{ r: 4, fill: dk.color || "#2347D6", stroke: "#111111", strokeWidth: 1.5 }}
+                    activeDot={{ r: 6, stroke: "#111111", strokeWidth: 2 }}
                   />
                 ))}
               </LineChart>
             </ResponsiveContainer>
           </div>
         )}
-      </CardContent>
-    </Card>
+      </div>
+    </Folder>
   );
 }

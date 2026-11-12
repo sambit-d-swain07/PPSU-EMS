@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Sticker } from "@/components/ui-theme/sticker";
 import {
   Dialog,
   DialogContent,
@@ -123,27 +124,27 @@ export function OrganizerEventsTable({ data }: OrganizerEventsTableProps) {
           const status = row.original.status;
           switch (status) {
             case "APPROVED":
-              return <Badge variant="success">Approved</Badge>;
+              return <Sticker variant="approved">APPROVED</Sticker>;
             case "PENDING":
-              return <Badge variant="warning">Pending Review</Badge>;
+              return <Sticker variant="pending">IN REVIEW</Sticker>;
             case "REJECTED":
               return (
-                <div className="flex items-center gap-1.5">
-                  <Badge variant="destructive">Rejected</Badge>
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  <Sticker variant="rejected">REJECTED</Sticker>
                   {row.original.reviewRemark && (
                     <button
                       type="button"
                       onClick={() => setRemarkDialogEvent(row.original)}
-                      className="text-xs text-red-600 underline flex items-center hover:text-red-800"
+                      className="text-[10px] font-mono uppercase tracking-wider text-[#E8573A] underline flex items-center hover:opacity-80 cursor-pointer"
                     >
-                      <AlertCircle className="h-3.5 w-3.5 mr-0.5" /> Remark
+                      <AlertCircle className="h-3 w-3 mr-0.5" /> Note
                     </button>
                   )}
                 </div>
               );
             case "DRAFT":
             default:
-              return <Badge variant="secondary">Draft</Badge>;
+              return <Sticker variant="draft">DRAFT</Sticker>;
           }
         },
       },
@@ -157,9 +158,9 @@ export function OrganizerEventsTable({ data }: OrganizerEventsTableProps) {
               size="sm"
               variant="outline"
               onClick={() => setRegistrationsDialogEvent(row.original)}
-              className="text-xs h-8"
+              className="text-xs h-7 font-mono px-2"
             >
-              <Users className="h-3.5 w-3.5 mr-1 text-slate-500" />
+              <Users className="h-3.5 w-3.5 mr-1 text-muted-ink" />
               {regCount} / {row.original.capacity}
             </Button>
           );
@@ -176,21 +177,21 @@ export function OrganizerEventsTable({ data }: OrganizerEventsTableProps) {
             const isEnded = new Date(row.original.endsAt).getTime() <= Date.now();
             return (
               <div className="flex items-center gap-1.5 flex-wrap">
-                <Button size="sm" variant="default" className="text-xs h-8" asChild>
+                <Button size="sm" variant="default" className="text-xs h-7 px-2" asChild>
                   <Link href={`/organizer/events/${row.original.id}/attendance`}>
-                    <QrCode className="h-3.5 w-3.5 mr-1" /> Attendance
+                    <QrCode className="h-3.5 w-3.5 mr-1" /> Check-in
                   </Link>
                 </Button>
-                <Button size="sm" variant="outline" className="text-xs h-8" asChild>
+                <Button size="sm" variant="outline" className="text-xs h-7 px-2" asChild>
                   <Link href={`/organizer/events/${row.original.id}/analytics`}>
-                    <BarChart3 className="h-3.5 w-3.5 mr-1 text-indigo-600" /> Analytics
+                    <BarChart3 className="h-3.5 w-3.5 mr-1 text-blue-600" /> Stats
                   </Link>
                 </Button>
                 {isEnded && (
                   <Button
                     size="sm"
                     variant="outline"
-                    className="text-xs h-8"
+                    className="text-xs h-7 px-2"
                     onClick={() => setFeedbackDialogEvent(row.original)}
                   >
                     <MessageSquare className="h-3.5 w-3.5 mr-1 text-amber-600" /> Feedback
@@ -202,7 +203,7 @@ export function OrganizerEventsTable({ data }: OrganizerEventsTableProps) {
 
           if (isEditable) {
             return (
-              <Button size="sm" variant="outline" className="text-xs h-8" asChild>
+              <Button size="sm" variant="outline" className="text-xs h-7 px-2.5" asChild>
                 <Link href={`/organizer/events/${row.original.id}/edit`}>
                   <Edit className="h-3.5 w-3.5 mr-1" /> Edit
                 </Link>
@@ -211,7 +212,7 @@ export function OrganizerEventsTable({ data }: OrganizerEventsTableProps) {
           }
 
           return (
-            <span className="text-xs text-slate-400 italic">Locked</span>
+            <span className="text-[11px] font-mono text-muted-ink uppercase tracking-wider">Locked</span>
           );
         },
       },
@@ -233,24 +234,23 @@ export function OrganizerEventsTable({ data }: OrganizerEventsTableProps) {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h2 className="text-lg font-semibold tracking-tight text-slate-900">
-            My Events
+          <h2 className="font-pixel text-xl tracking-tight text-ink uppercase">
+            MY PROPOSED & HOSTED EVENTS
           </h2>
-          <p className="text-xs text-muted-foreground">
-            Manage your created events, track approvals, and view student
-            registrations.
+          <p className="font-hand text-base text-muted-ink">
+            manage your events, check approvals & view student turnouts
           </p>
         </div>
-        <Button size="sm" asChild>
+        <Button size="sm" variant="yellow" asChild className="self-start sm:self-auto">
           <Link href="/organizer/events/new">
-            <PlusCircle className="h-4 w-4 mr-1.5" /> Create Event
+            <PlusCircle className="h-4 w-4 mr-1.5" /> CREATE EVENT
           </Link>
         </Button>
       </div>
 
-      <div className="rounded-md border bg-white shadow-xs">
+      <div className="border-2 border-ink rounded-[3px] bg-paper shadow-hard overflow-hidden">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -325,14 +325,14 @@ export function OrganizerEventsTable({ data }: OrganizerEventsTableProps) {
             if (!open) setRemarkDialogEvent(null);
           }}
         >
-          <DialogContent>
+          <DialogContent className="border-2 border-ink bg-paper shadow-hard-lg">
             <DialogHeader>
-              <DialogTitle>Rejection Remark</DialogTitle>
-              <DialogDescription>
+              <DialogTitle className="font-pixel text-lg">REJECTION REMARK</DialogTitle>
+              <DialogDescription className="font-mono text-xs text-muted-ink">
                 Feedback provided for &quot;{remarkDialogEvent.title}&quot;
               </DialogDescription>
             </DialogHeader>
-            <div className="rounded-md bg-red-50 border border-red-100 p-4 text-sm text-red-800">
+            <div className="rounded-[3px] bg-[#FDF2F4] border-2 border-ink p-4 text-xs font-mono text-ink shadow-hard-sm">
               {remarkDialogEvent.reviewRemark || "No detailed remark provided."}
             </div>
             <div className="flex justify-end gap-2 pt-2">
@@ -343,7 +343,7 @@ export function OrganizerEventsTable({ data }: OrganizerEventsTableProps) {
               >
                 Close
               </Button>
-              <Button size="sm" asChild>
+              <Button size="sm" variant="yellow" asChild>
                 <Link href={`/organizer/events/${remarkDialogEvent.id}/edit`}>
                   Edit and Resubmit
                 </Link>
@@ -361,22 +361,22 @@ export function OrganizerEventsTable({ data }: OrganizerEventsTableProps) {
             if (!open) setRegistrationsDialogEvent(null);
           }}
         >
-          <DialogContent className="max-w-2xl max-h-[80vh] flex flex-col">
+          <DialogContent className="max-w-2xl max-h-[80vh] flex flex-col border-2 border-ink bg-paper shadow-hard-lg">
             <DialogHeader>
               <DialogTitle className="flex items-center justify-between">
-                <span>Registered Students</span>
-                <Badge variant="outline">
+                <span className="font-pixel text-lg">REGISTERED STUDENTS</span>
+                <Badge variant="outline" className="border-2 border-ink bg-[#BFE5CF] font-mono text-[10px]">
                   {registrationsDialogEvent.registrations?.length || 0} /{" "}
-                  {registrationsDialogEvent.capacity} Filled
+                  {registrationsDialogEvent.capacity} FILLED
                 </Badge>
               </DialogTitle>
-              <DialogDescription>
+              <DialogDescription className="font-mono text-xs text-muted-ink">
                 Confirmed attendee list for &quot;
                 {registrationsDialogEvent.title}&quot;
               </DialogDescription>
             </DialogHeader>
 
-            <div className="overflow-y-auto flex-1 my-2 border rounded-md">
+            <div className="overflow-y-auto flex-1 my-2 border-2 border-ink rounded-[3px] bg-paper shadow-hard-sm">
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -390,16 +390,16 @@ export function OrganizerEventsTable({ data }: OrganizerEventsTableProps) {
                   {registrationsDialogEvent.registrations?.length ? (
                     registrationsDialogEvent.registrations.map((reg) => (
                       <TableRow key={reg.id}>
-                        <TableCell className="font-medium text-slate-900">
+                        <TableCell className="font-mono text-xs font-semibold text-ink">
                           {reg.user.name}
                         </TableCell>
-                        <TableCell className="text-slate-600 text-xs">
+                        <TableCell className="font-mono text-xs text-muted-ink">
                           {reg.user.email}
                         </TableCell>
-                        <TableCell className="text-slate-600 text-xs">
+                        <TableCell className="font-mono text-xs text-muted-ink">
                           {reg.user.department || "General"}
                         </TableCell>
-                        <TableCell className="text-slate-500 text-xs">
+                        <TableCell className="font-mono text-xs text-muted-ink">
                           {format(new Date(reg.createdAt), "MMM d, h:mm a")}
                         </TableCell>
                       </TableRow>
@@ -408,7 +408,7 @@ export function OrganizerEventsTable({ data }: OrganizerEventsTableProps) {
                     <TableRow>
                       <TableCell
                         colSpan={4}
-                        className="h-24 text-center text-muted-foreground text-sm"
+                        className="h-24 text-center font-mono text-xs text-muted-ink"
                       >
                         No students have registered for this event yet.
                       </TableCell>
@@ -447,31 +447,31 @@ export function OrganizerEventsTable({ data }: OrganizerEventsTableProps) {
               if (!open) setFeedbackDialogEvent(null);
             }}
           >
-            <DialogContent className="max-w-2xl max-h-[80vh] flex flex-col">
+            <DialogContent className="max-w-2xl max-h-[80vh] flex flex-col border-2 border-ink bg-paper shadow-hard-lg">
               <DialogHeader>
                 <div className="flex items-center justify-between gap-2">
-                  <DialogTitle className="text-lg font-bold text-slate-900">
-                    Attendee Feedback
+                  <DialogTitle className="font-pixel text-lg">
+                    ATTENDEE FEEDBACK
                   </DialogTitle>
                   <div className="flex items-center gap-2">
-                    <Badge variant="outline" className="gap-1 font-semibold text-amber-700 bg-amber-50 border-amber-200">
-                      <Star className="h-3 w-3 fill-amber-500 text-amber-500" />
-                      {avg ? `${avg} / 5` : "No ratings"}
+                    <Badge variant="outline" className="gap-1 font-mono text-[10px] bg-[#F6C945] border-2 border-ink text-ink">
+                      <Star className="h-3 w-3 fill-ink text-ink" />
+                      {avg ? `${avg} / 5` : "NO RATINGS"}
                     </Badge>
-                    <Badge variant="secondary">
-                      {feedbacks.length} {feedbacks.length === 1 ? "response" : "responses"}
+                    <Badge variant="secondary" className="font-mono text-[10px] border-2 border-ink">
+                      {feedbacks.length} {feedbacks.length === 1 ? "REVIEW" : "REVIEWS"}
                     </Badge>
                   </div>
                 </div>
-                <DialogDescription className="text-xs">
+                <DialogDescription className="font-mono text-xs text-muted-ink">
                   Anonymous student ratings and reviews for &quot;{feedbackDialogEvent.title}&quot;
                 </DialogDescription>
               </DialogHeader>
 
-              <div className="overflow-y-auto flex-1 my-2 border rounded-md">
+              <div className="overflow-y-auto flex-1 my-2 border-2 border-ink rounded-[3px] bg-paper shadow-hard-sm">
                 <Table>
                   <TableHeader>
-                    <TableRow className="bg-slate-50/70">
+                    <TableRow>
                       <TableHead className="w-24">Rating</TableHead>
                       <TableHead>Comment</TableHead>
                       <TableHead className="w-28 text-right">Date</TableHead>
@@ -484,16 +484,16 @@ export function OrganizerEventsTable({ data }: OrganizerEventsTableProps) {
                           <TableCell className="font-semibold text-amber-600">
                             <span className="flex items-center gap-0.5">
                               {Array.from({ length: f.rating }).map((_, i) => (
-                                <Star key={i} className="h-3 w-3 fill-amber-500 text-amber-500" />
+                                <Star key={i} className="h-3 w-3 fill-[#F6C945] text-ink" />
                               ))}
                             </span>
                           </TableCell>
-                          <TableCell className="text-xs text-slate-700 leading-relaxed">
+                          <TableCell className="text-xs font-mono text-ink leading-relaxed">
                             {f.comment || (
-                              <span className="text-slate-400 italic">No written comment</span>
+                              <span className="text-muted-ink italic">No written comment</span>
                             )}
                           </TableCell>
-                          <TableCell className="text-right text-[11px] text-slate-500">
+                          <TableCell className="text-right text-[11px] font-mono text-muted-ink">
                             {format(new Date(f.createdAt), "MMM d, yyyy")}
                           </TableCell>
                         </TableRow>
@@ -502,7 +502,7 @@ export function OrganizerEventsTable({ data }: OrganizerEventsTableProps) {
                       <TableRow>
                         <TableCell
                           colSpan={3}
-                          className="h-28 text-center text-muted-foreground text-xs"
+                          className="h-28 text-center font-mono text-xs text-muted-ink"
                         >
                           No feedback has been submitted by attendees yet.
                         </TableCell>

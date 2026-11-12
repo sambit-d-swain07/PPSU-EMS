@@ -1,10 +1,9 @@
 import { Skeleton } from "@/components/ui/skeleton";
-import { Card, CardContent } from "@/components/ui/card";
 
 export default function RegistrationsLoading() {
   return (
-    <div className="min-h-screen bg-slate-50/50">
-      <header className="border-b bg-white">
+    <div className="min-h-screen bg-paper">
+      <header className="border-b-2 border-ink bg-paper">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <Skeleton className="h-8 w-48" />
           <Skeleton className="h-9 w-20" />
@@ -21,20 +20,19 @@ export default function RegistrationsLoading() {
 
         <div className="space-y-4">
           {Array.from({ length: 3 }).map((_, i) => (
-            <Card key={i} className="overflow-hidden">
-              <CardContent className="p-4 sm:p-5 flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
+            <div key={i} className="border-2 border-ink rounded-[3px] overflow-hidden">
+              <div className="p-4 sm:p-5 flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
                 <div className="space-y-2 w-full sm:w-2/3">
                   <Skeleton className="h-5 w-48" />
                   <Skeleton className="h-4 w-36" />
                   <Skeleton className="h-3 w-64" />
                 </div>
                 <Skeleton className="h-9 w-28 shrink-0" />
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           ))}
         </div>
       </main>
     </div>
   );
 }
-

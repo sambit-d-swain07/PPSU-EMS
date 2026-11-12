@@ -15,9 +15,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
+import { Sticker } from "@/components/ui-theme/sticker";
 import { format } from "date-fns";
 import { Edit2, KeyRound, ChevronLeft, ChevronRight } from "lucide-react";
 import { toggleUserActiveAction } from "@/actions/users";
@@ -85,21 +85,21 @@ export function UsersTable({
           const user = row.original;
           const isSelf = user.id === currentUserId;
           return (
-            <div className="space-y-0.5">
+            <div className="space-y-0.5 font-mono">
               <div className="flex items-center gap-1.5">
-                <span className="font-semibold text-slate-900 text-xs">{user.name}</span>
+                <span className="font-semibold text-ink text-xs">{user.name}</span>
                 {isSelf && (
-                  <Badge variant="outline" className="text-[10px] py-0 px-1 bg-slate-50 text-slate-600">
-                    You
-                  </Badge>
+                  <span className="font-mono text-[9px] px-1 bg-paper border border-ink text-ink font-bold">
+                    YOU
+                  </span>
                 )}
                 {user.mustChangePassword && (
-                  <Badge variant="warning" className="text-[10px] py-0 px-1">
-                    Temp Pass
-                  </Badge>
+                  <span className="font-mono text-[9px] px-1 bg-[#F6C945] border border-ink text-ink font-bold">
+                    TEMP PASS
+                  </span>
                 )}
               </div>
-              <p className="text-[11px] text-slate-500 font-mono">{user.email}</p>
+              <p className="text-[11px] text-muted-ink">{user.email}</p>
             </div>
           );
         },
@@ -111,12 +111,12 @@ export function UsersTable({
           const role = row.original.role;
           switch (role) {
             case "ADMIN":
-              return <Badge variant="destructive" className="text-[10px]">Admin</Badge>;
+              return <Sticker variant="pink">ADMIN</Sticker>;
             case "ORGANIZER":
-              return <Badge variant="warning" className="text-[10px]">Organizer</Badge>;
+              return <Sticker variant="yellow">ORGANIZER</Sticker>;
             case "STUDENT":
             default:
-              return <Badge variant="secondary" className="text-[10px]">Student</Badge>;
+              return <Sticker variant="cream">STUDENT</Sticker>;
           }
         },
       },
@@ -124,7 +124,7 @@ export function UsersTable({
         accessorKey: "department",
         header: "Department",
         cell: ({ row }) => (
-          <span className="text-xs text-slate-600">
+          <span className="text-xs font-mono text-muted-ink">
             {row.original.department || "-"}
           </span>
         ),
@@ -138,7 +138,7 @@ export function UsersTable({
           const isPending = pendingToggles[user.id] || false;
 
           return (
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 font-mono">
               <Switch
                 checked={user.isActive}
                 disabled={isSelf || isPending}
@@ -146,8 +146,8 @@ export function UsersTable({
                 aria-label={`Toggle active status for ${user.name}`}
               />
               <span
-                className={`text-[11px] font-medium ${
-                  user.isActive ? "text-emerald-700" : "text-slate-400"
+                className={`text-[11px] font-bold uppercase tracking-wider ${
+                  user.isActive ? "text-[#19A860]" : "text-muted-ink"
                 }`}
               >
                 {user.isActive ? "Active" : "Disabled"}
@@ -160,7 +160,7 @@ export function UsersTable({
         accessorKey: "createdAt",
         header: "Created",
         cell: ({ row }) => (
-          <span className="text-[11px] text-slate-500">
+          <span className="text-[11px] font-mono text-muted-ink">
             {format(new Date(row.original.createdAt), "MMM d, yyyy")}
           </span>
         ),
@@ -176,17 +176,17 @@ export function UsersTable({
                 variant="outline"
                 size="sm"
                 onClick={() => setEditUser(user)}
-                className="h-7 px-2 text-xs"
+                className="h-7 px-2 text-xs font-mono"
               >
-                <Edit2 className="h-3 w-3 mr-1 text-slate-500" /> Edit
+                <Edit2 className="h-3 w-3 mr-1 text-muted-ink" /> Edit
               </Button>
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => setResetUser(user)}
-                className="h-7 px-2 text-xs text-amber-700 hover:text-amber-900 border-amber-200 bg-amber-50/50 hover:bg-amber-100/50"
+                className="h-7 px-2 text-xs font-mono border-ink bg-paper"
               >
-                <KeyRound className="h-3 w-3 mr-1 text-amber-600" /> Reset Pass
+                <KeyRound className="h-3 w-3 mr-1 text-ink" /> Reset Pass
               </Button>
             </div>
           );
@@ -204,13 +204,13 @@ export function UsersTable({
 
   return (
     <div className="space-y-4">
-      <div className="rounded-xl border border-slate-200 bg-white shadow-2xs overflow-hidden">
+      <div className="border-2 border-ink rounded-[3px] bg-paper shadow-hard overflow-hidden">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id} className="bg-slate-50/75">
+              <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id} className="text-xs font-semibold">
+                  <TableHead key={header.id}>
                     {header.isPlaceholder
                       ? null
                       : flexRender(header.column.columnDef.header, header.getContext())}
@@ -234,7 +234,7 @@ export function UsersTable({
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className="h-28 text-center text-xs text-muted-foreground"
+                  className="h-28 text-center text-xs font-mono text-muted-ink"
                 >
                   No user accounts found matching your search criteria.
                 </TableCell>
@@ -246,7 +246,7 @@ export function UsersTable({
 
       {/* Pagination Controls */}
       {totalPages > 1 && (
-        <div className="flex items-center justify-between px-2 text-xs text-slate-500">
+        <div className="flex items-center justify-between px-2 font-mono text-xs text-muted-ink">
           <div>
             Showing {(currentPage - 1) * pageSize + 1} to{" "}
             {Math.min(currentPage * pageSize, totalCount)} of {totalCount} users
@@ -257,11 +257,11 @@ export function UsersTable({
               size="sm"
               disabled={currentPage <= 1}
               onClick={() => setPage(currentPage - 1)}
-              className="h-8 text-xs"
+              className="h-8 text-xs font-mono"
             >
-              <ChevronLeft className="h-3.5 w-3.5 mr-1" /> Previous
+              <ChevronLeft className="h-3.5 w-3.5 mr-1" /> Prev
             </Button>
-            <span className="px-2 text-xs font-medium text-slate-700">
+            <span className="px-2 text-xs font-bold text-ink">
               Page {currentPage} of {totalPages}
             </span>
             <Button
@@ -269,7 +269,7 @@ export function UsersTable({
               size="sm"
               disabled={currentPage >= totalPages}
               onClick={() => setPage(currentPage + 1)}
-              className="h-8 text-xs"
+              className="h-8 text-xs font-mono"
             >
               Next <ChevronRight className="h-3.5 w-3.5 ml-1" />
             </Button>

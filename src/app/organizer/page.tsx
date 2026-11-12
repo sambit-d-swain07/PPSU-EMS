@@ -15,6 +15,7 @@ import { StatCard } from "@/components/analytics/stat-card";
 import { BarChartCard } from "@/components/analytics/bar-chart-card";
 import { LineChartCard } from "@/components/analytics/line-chart-card";
 import { DateRangeFilter } from "@/components/analytics/date-range-filter";
+import { PixelHeading } from "@/components/ui-theme/pixel-heading";
 import {
   Calendar,
   Clock,
@@ -86,25 +87,23 @@ export default async function OrganizerPage({ searchParams }: OrganizerPageProps
   ]);
 
   return (
-    <div className="min-h-screen bg-slate-50/50">
+    <div className="min-h-screen">
       <AppNavbar
         userName={session.user.name || "Organizer"}
         role="ORGANIZER"
-        subtitle="Organizer Portal"
+        subtitle="Organizer Desk"
       />
 
       <main className="max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-8">
         {/* Header and Filter */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
-              Organizer Dashboard
-            </h1>
-            <p className="text-xs sm:text-sm text-muted-foreground">
-              Performance metrics, attendee turnouts, and event proposals.
-            </p>
+          <PixelHeading
+            title="ORGANIZER DESK"
+            caption="performance metrics, attendee turnouts & proposed events"
+          />
+          <div className="self-start sm:self-auto">
+            <DateRangeFilter />
           </div>
-          <DateRangeFilter />
         </div>
 
         {/* Overview Stat Cards */}
@@ -114,46 +113,58 @@ export default async function OrganizerPage({ searchParams }: OrganizerPageProps
             value={stats.totalEvents}
             description={`${stats.approvedEvents} approved • ${stats.draftEvents} drafts`}
             icon={Calendar}
+            color="yellow"
+            rotation="-rotate-1"
           />
           <StatCard
             title="Approved"
             value={stats.approvedEvents}
             description="Live or completed"
             icon={CheckCircle}
+            color="mint"
+            rotation="rotate-1"
           />
           <StatCard
             title="In Review"
             value={stats.pendingEvents}
             description="Awaiting admin approval"
             icon={Clock}
+            color="cream"
+            rotation="-rotate-0.5"
           />
           <StatCard
             title="Registrations"
             value={stats.totalRegistrations}
             description="Total sign-ups"
             icon={Users}
+            color="blue"
+            rotation="rotate-1"
           />
           <StatCard
             title="Attendance"
             value={`${stats.attendanceRate}%`}
-            description={`${stats.totalAttended} attendees checked in`}
+            description={`${stats.totalAttended} checked in`}
             icon={UserCheck}
+            color="mint"
+            rotation="-rotate-1"
           />
           <StatCard
             title="Avg Rating"
             value={stats.avgRating ? `${stats.avgRating} / 5` : "N/A"}
-            description={`${stats.feedbackCount} feedback ratings`}
+            description={`${stats.feedbackCount} ratings`}
             icon={Star}
+            color="pink"
+            rotation="rotate-0.5"
           />
         </div>
 
         {/* Charts Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           <BarChartCard
             title="Registrations by Event"
             description="Total student registrations across your approved events"
             data={registrationsPerEvent}
-            dataKeys={[{ key: "registrations", name: "Registrations", color: "#3b82f6" }]}
+            dataKeys={[{ key: "registrations", name: "Registrations", color: "#2347D6" }]}
             emptyMessage="No approved events with registrations"
           />
 
@@ -161,28 +172,28 @@ export default async function OrganizerPage({ searchParams }: OrganizerPageProps
             title="Attendance Rate"
             description="Percentage of checked-in students for completed events"
             data={attendanceRateByEvent}
-            dataKeys={[{ key: "rate", name: "Attendance Rate (%)", color: "#10b981" }]}
+            dataKeys={[{ key: "rate", name: "Attendance Rate (%)", color: "#19A860" }]}
             emptyMessage="No completed events yet"
           />
 
           <LineChartCard
             title="Events Created (Last 6 Months)"
-            description="Monthly history of organized campus events"
+            description="Monthly cadence of organized campus events"
             data={eventsPerMonth}
-            dataKeys={[{ key: "events", name: "Events", color: "#6366f1" }]}
+            dataKeys={[{ key: "events", name: "Events", color: "#F0508C" }]}
           />
 
           <BarChartCard
             title="Events by Status"
             description="Current pipeline status of all your proposed events"
             data={eventsByStatus}
-            dataKeys={[{ key: "count", name: "Events", color: "#f59e0b" }]}
+            dataKeys={[{ key: "count", name: "Events", color: "#F6C945" }]}
             emptyMessage="No events found"
           />
         </div>
 
         {/* Events Table */}
-        <div className="pt-4 border-t border-slate-200">
+        <div className="pt-2">
           <OrganizerEventsTable data={events} />
         </div>
       </main>

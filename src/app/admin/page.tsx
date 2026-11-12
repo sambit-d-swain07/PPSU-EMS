@@ -6,6 +6,7 @@ import { PendingApprovalsTable } from "@/components/pending-approvals-table";
 import { VenuesManager } from "@/components/venues-manager";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
+import { PixelHeading } from "@/components/ui-theme/pixel-heading";
 import {
   parseDateRangePreset,
   getOverviewStats,
@@ -28,7 +29,6 @@ import {
   Building2,
   Trophy,
 } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -84,25 +84,24 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
   ]);
 
   return (
-    <div className="min-h-screen bg-slate-50/50">
+    <div className="min-h-screen">
       <AppNavbar
         userName={session.user.name || "Administrator"}
         role="ADMIN"
-        subtitle="Administrator Dashboard"
+        subtitle="Administrator Desk"
+        activeNav="analytics"
       />
 
       <main className="max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-8">
         {/* Analytics Header & Date Range Filter */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
-              Platform Analytics
-            </h1>
-            <p className="text-xs sm:text-sm text-muted-foreground">
-              Campus-wide event metrics, student engagement, and venue utilization.
-            </p>
+          <PixelHeading
+            title="CAMPUS ANALYTICS"
+            caption="campus-wide event metrics, student engagement & venue utilization"
+          />
+          <div className="self-start sm:self-auto">
+            <DateRangeFilter />
           </div>
-          <DateRangeFilter />
         </div>
 
         {/* Stat Cards Row */}
@@ -110,48 +109,60 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
           <StatCard
             title="Total Events"
             value={stats.totalEvents}
-            description={`${stats.approvedEvents} approved • ${stats.pendingEvents} pending`}
+            description={`${stats.approvedEvents} live • ${stats.pendingEvents} pending`}
             icon={Calendar}
+            color="yellow"
+            rotation="-rotate-1"
           />
           <StatCard
             title="Pending Review"
             value={stats.pendingEvents}
             description="Requires admin decision"
             icon={Clock}
+            color="pink"
+            rotation="rotate-1"
           />
           <StatCard
             title="Registrations"
             value={stats.totalRegistrations}
             description="All active bookings"
             icon={Users}
+            color="blue"
+            rotation="-rotate-0.5"
           />
           <StatCard
             title="Attendance"
             value={`${stats.attendanceRate}%`}
-            description={`${stats.totalAttended} attended of ${stats.totalRegistrations}`}
+            description={`${stats.totalAttended} of ${stats.totalRegistrations} turnouts`}
             icon={UserCheck}
+            color="mint"
+            rotation="rotate-0.5"
           />
           <StatCard
             title="Avg Rating"
             value={stats.avgRating ? `${stats.avgRating} / 5` : "N/A"}
             description={`${stats.feedbackCount} attendee reviews`}
             icon={Star}
+            color="cream"
+            rotation="-rotate-1"
           />
           <StatCard
             title="Venues"
             value={venues.length}
             description="Active campus venues"
             icon={Building2}
+            color="yellow"
+            rotation="rotate-1"
           />
         </div>
 
         {/* Charts Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           <BarChartCard
             title="Registrations per Event"
             description="Top approved events by student registrations"
             data={registrationsPerEvent}
-            dataKeys={[{ key: "registrations", name: "Registrations", color: "#3b82f6" }]}
+            dataKeys={[{ key: "registrations", name: "Registrations", color: "#2347D6" }]}
             emptyMessage="No approved events with registrations"
           />
 
@@ -159,7 +170,7 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
             title="Events by Category"
             description="Distribution of campus activities across categories"
             data={eventsPerCategory}
-            dataKeys={[{ key: "count", name: "Events", color: "#8b5cf6" }]}
+            dataKeys={[{ key: "count", name: "Events", color: "#F0508C" }]}
             emptyMessage="No events found for this filter"
           />
 
@@ -167,94 +178,90 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
             title="Events Trend (Last 6 Months)"
             description="Monthly cadence of campus events scheduled"
             data={eventsPerMonth}
-            dataKeys={[{ key: "events", name: "Events Scheduled", color: "#06b6d4" }]}
+            dataKeys={[{ key: "events", name: "Events Scheduled", color: "#19A860" }]}
           />
 
           <BarChartCard
             title="Attendance Rate by Event"
             description="Percentage of registered students who checked in"
             data={attendanceRateByEvent}
-            dataKeys={[{ key: "rate", name: "Attendance Rate (%)", color: "#10b981" }]}
+            dataKeys={[{ key: "rate", name: "Attendance Rate (%)", color: "#F6C945" }]}
             emptyMessage="No completed events to show attendance for"
           />
         </div>
 
         {/* Top Organizers Leaderboard */}
-        <Card className="border border-slate-200 shadow-2xs">
-          <CardHeader className="pb-3">
-            <div className="flex items-center justify-between">
-              <div>
-                <CardTitle className="text-sm font-semibold text-slate-900 flex items-center gap-1.5">
-                  <Trophy className="h-4 w-4 text-amber-500" /> Top Event Organizers
-                </CardTitle>
-                <CardDescription className="text-xs">
-                  Most active university organizers by total student registrations
-                </CardDescription>
-              </div>
+        <div className="border-2 border-ink rounded-[3px] bg-paper shadow-hard overflow-hidden">
+          <div className="p-4 border-b-2 border-ink bg-paper-cream flex items-center justify-between">
+            <div>
+              <h3 className="font-pixel text-base text-ink uppercase tracking-tight flex items-center gap-1.5">
+                <Trophy className="h-4 w-4" /> TOP EVENT ORGANIZERS
+              </h3>
+              <p className="font-hand text-sm text-muted-ink">
+                most active university organizers by total student registrations
+              </p>
             </div>
-          </CardHeader>
-          <CardContent>
-            <div className="rounded-md border border-slate-100 overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow className="bg-slate-50/75">
-                    <TableHead className="text-xs">Organizer Name</TableHead>
-                    <TableHead className="text-xs">Department</TableHead>
-                    <TableHead className="text-xs text-center">Approved Events</TableHead>
-                    <TableHead className="text-xs text-right">Total Registrations</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {topOrganizers.length > 0 ? (
-                    topOrganizers.map((org, idx) => (
-                      <TableRow key={org.id}>
-                        <TableCell className="text-xs font-medium text-slate-900 flex items-center gap-2">
-                          <span className="h-5 w-5 rounded-full bg-slate-100 text-slate-700 flex items-center justify-center text-[10px] font-bold">
-                            #{idx + 1}
-                          </span>
-                          {org.name}
-                        </TableCell>
-                        <TableCell className="text-xs text-slate-600">
-                          {org.department}
-                        </TableCell>
-                        <TableCell className="text-xs text-center">
-                          <Badge variant="outline" className="font-medium text-slate-700">
-                            {org.approvedEvents}
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="text-xs text-right font-semibold text-slate-900">
-                          {org.totalRegistrations}
-                        </TableCell>
-                      </TableRow>
-                    ))
-                  ) : (
-                    <TableRow>
-                      <TableCell colSpan={4} className="h-20 text-center text-xs text-muted-foreground">
-                        No organizers found.
+          </div>
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="text-xs">Rank & Name</TableHead>
+                  <TableHead className="text-xs">Department</TableHead>
+                  <TableHead className="text-xs text-center">Approved Events</TableHead>
+                  <TableHead className="text-xs text-right">Total Registrations</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {topOrganizers.length > 0 ? (
+                  topOrganizers.map((org, idx) => (
+                    <TableRow key={org.id}>
+                      <TableCell className="text-xs font-mono font-semibold text-ink flex items-center gap-2">
+                        <span className="h-5 w-5 rounded-[2px] border border-ink bg-[#F6C945] text-ink flex items-center justify-center text-[10px] font-bold">
+                          #{idx + 1}
+                        </span>
+                        {org.name}
+                      </TableCell>
+                      <TableCell className="text-xs font-mono text-muted-ink">
+                        {org.department}
+                      </TableCell>
+                      <TableCell className="text-xs text-center">
+                        <Badge variant="outline" className="font-mono text-[10px] border border-ink bg-paper text-ink">
+                          {org.approvedEvents}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-xs text-right font-mono font-bold text-ink">
+                        {org.totalRegistrations}
                       </TableCell>
                     </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </div>
-          </CardContent>
-        </Card>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={4} className="h-20 text-center text-xs font-mono text-muted-ink">
+                      No organizers found.
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </div>
+        </div>
 
         {/* Existing Admin Management Tabs */}
-        <div className="pt-4 border-t border-slate-200">
+        <div className="pt-2">
           <Tabs defaultValue="approvals" className="space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
-                <h2 className="text-lg font-bold text-slate-900">Platform Management</h2>
-                <p className="text-xs text-muted-foreground">
-                  Review pending proposals and configure campus event venues.
+                <h2 className="font-pixel text-xl tracking-tight text-ink uppercase">PLATFORM MANAGEMENT</h2>
+                <p className="font-hand text-base text-muted-ink">
+                  review pending proposals and configure campus event venues
                 </p>
               </div>
-              <TabsList className="bg-slate-100 p-1 w-full sm:w-auto">
+              <TabsList className="w-full sm:w-auto">
                 <TabsTrigger value="approvals" className="text-xs sm:text-sm flex items-center gap-1.5 flex-1 sm:flex-initial">
                   Pending Approvals
                   {pendingEvents.length > 0 && (
-                    <Badge variant="destructive" className="ml-1 text-[10px] px-1.5 py-0 h-4">
+                    <Badge variant="outline" className="ml-1 text-[10px] px-1.5 py-0 h-4 bg-[#F0508C] text-white border-none font-bold">
                       {pendingEvents.length}
                     </Badge>
                   )}

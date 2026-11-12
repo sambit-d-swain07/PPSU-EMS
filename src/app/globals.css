@@ -1,6 +1,18 @@
 @import "tailwindcss";
 
 @theme {
+  --color-paper: #F7F6F2;
+  --color-ink: #111111;
+  --color-muted-ink: #6B6B6B;
+  --color-accent-yellow: #F6C945;
+  --color-accent-pink: #F0508C;
+  --color-accent-green: #19A860;
+  --color-accent-mint: #BFE5CF;
+  --color-accent-blue: #2347D6;
+  --color-accent-cream: #EFE6D2;
+  --color-accent-sticker: #F3E6B8;
+  --color-accent-doodle: #E8573A;
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -20,35 +32,126 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  --radius-lg: var(--radius);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-sm: calc(var(--radius) - 4px);
+
+  --font-pixel: var(--font-pixel), monospace;
+  --font-hand: var(--font-hand), cursive;
+  --font-sans: var(--font-sans), sans-serif;
+  --font-mono: var(--font-mono), monospace;
 }
 
 :root {
-  --background: #f8fafc;
-  --foreground: #0f172a;
-  --card: #ffffff;
-  --card-foreground: #0f172a;
-  --popover: #ffffff;
-  --popover-foreground: #0f172a;
-  --primary: #0f2347;
-  --primary-foreground: #f8fafc;
-  --secondary: #f1f5f9;
-  --secondary-foreground: #0f2347;
-  --muted: #f1f5f9;
-  --muted-foreground: #64748b;
-  --accent: #e2e8f0;
-  --accent-foreground: #0f2347;
-  --destructive: #b91c1c;
-  --destructive-foreground: #ffffff;
-  --border: #e2e8f0;
-  --input: #cbd5e1;
-  --ring: #0f2347;
-  --radius: 0.5rem;
+  --background: #F7F6F2;
+  --foreground: #111111;
+  --card: #FFFFFF;
+  --card-foreground: #111111;
+  --popover: #FFFFFF;
+  --popover-foreground: #111111;
+  --primary: #111111;
+  --primary-foreground: #FFFFFF;
+  --secondary: #EFE6D2;
+  --secondary-foreground: #111111;
+  --muted: #EAE8DF;
+  --muted-foreground: #6B6B6B;
+  --accent: #F6C945;
+  --accent-foreground: #111111;
+  --destructive: #F0508C;
+  --destructive-foreground: #FFFFFF;
+  --border: #111111;
+  --input: #111111;
+  --ring: #2347D6;
+  --radius: 3px;
 }
 
+/* Notebook paper background */
 body {
-  background-color: var(--background);
-  color: var(--foreground);
+  background-color: #F7F6F2;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent,
+    transparent 27px,
+    rgba(35, 71, 214, 0.08) 27px,
+    rgba(35, 71, 214, 0.08) 28px
+  );
+  background-size: 100% 28px;
+  background-attachment: local;
+  color: #111111;
+  font-family: var(--font-sans), sans-serif;
+}
+
+/* Typography Utility Classes */
+.font-pixel {
+  font-family: var(--font-pixel), monospace;
+}
+
+.font-hand {
+  font-family: var(--font-hand), cursive;
+}
+
+.font-mono-label {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.6875rem;
+  line-height: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+}
+
+/* Hard Drop Shadows */
+.shadow-hard {
+  box-shadow: 3px 3px 0 #111111;
+}
+
+.shadow-hard-sm {
+  box-shadow: 2px 2px 0 #111111;
+}
+
+.shadow-hard-lg {
+  box-shadow: 5px 5px 0 #111111;
+}
+
+.shadow-hard-yellow {
+  box-shadow: 3px 3px 0 #F6C945;
+}
+
+.shadow-hard-pink {
+  box-shadow: 3px 3px 0 #F0508C;
+}
+
+.shadow-hard-blue {
+  box-shadow: 3px 3px 0 #2347D6;
+}
+
+/* Ink borders */
+.border-ink {
+  border: 2px solid #111111;
+}
+
+.border-ink-sm {
+  border: 1.5px solid #111111;
+}
+
+/* Sketched Red-Orange Outline */
+.doodle-box {
+  position: relative;
+  display: inline-block;
+}
+
+.doodle-box::after {
+  content: "";
+  position: absolute;
+  inset: -6px -10px;
+  border: 2.5px solid #E8573A;
+  border-radius: 4px;
+  transform: rotate(-0.8deg);
+  pointer-events: none;
+}
+
+/* Hover tilt */
+@media (prefers-reduced-motion: no-preference) {
+  .hover-tilt {
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .hover-tilt:hover {
+    transform: translateY(-2px) rotate(0.6deg);
+  }
 }

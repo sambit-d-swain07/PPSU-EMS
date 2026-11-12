@@ -16,12 +16,13 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { markAttendance, toggleAttendance } from "@/actions/attendance";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Sticker } from "@/components/ui-theme/sticker";
+import { Folder } from "@/components/ui-theme/folder";
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -36,7 +37,7 @@ const Scanner = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="h-64 sm:h-80 w-full rounded-xl bg-slate-900 flex flex-col items-center justify-center text-slate-400 gap-2 border border-slate-800">
+      <div className="h-64 sm:h-80 w-full rounded-[3px] bg-ink flex flex-col items-center justify-center text-paper/60 gap-2 border-2 border-ink">
         <Camera className="h-8 w-8 animate-pulse text-slate-500" />
         <span className="text-xs">Initializing camera feed...</span>
       </div>
@@ -196,88 +197,101 @@ export function AttendanceScanner({
 
   return (
     <div className="space-y-6">
+      <div className="flex items-center gap-2">
+        <Button variant="outline" size="sm" asChild className="font-mono text-xs">
+          <Link href="/organizer">
+            <ArrowLeft className="h-4 w-4 mr-1" /> BACK TO MY EVENTS
+          </Link>
+        </Button>
+      </div>
+
       {/* Top Event Banner & Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card className="md:col-span-2 border-slate-200">
-          <CardHeader className="pb-3">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <Folder
+          tabTitle="EVENT CHECK-IN"
+          tabPosition="left"
+          color="paper"
+          className="md:col-span-2 p-5"
+        >
+          <div className="space-y-2">
             <div className="flex items-center gap-2 mb-1">
-              <Badge variant="outline">{eventCategory}</Badge>
-              <Badge variant="success">Approved</Badge>
+              <Sticker variant="cream">{eventCategory}</Sticker>
+              <Sticker variant="approved">APPROVED</Sticker>
             </div>
-            <CardTitle className="text-xl font-bold text-slate-900">
+            <h1 className="font-pixel text-2xl text-ink tracking-tight uppercase">
               {eventTitle}
-            </CardTitle>
-            <CardDescription className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-600 mt-2">
+            </h1>
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-1 font-mono text-xs text-muted-ink pt-1">
               <span className="flex items-center gap-1.5">
-                <Calendar className="h-3.5 w-3.5 text-slate-400" />
+                <Calendar className="h-3.5 w-3.5" />
                 {format(startDate, "MMM d, yyyy")}
               </span>
               <span className="flex items-center gap-1.5">
-                <Clock className="h-3.5 w-3.5 text-slate-400" />
+                <Clock className="h-3.5 w-3.5" />
                 {format(startDate, "h:mm a")} - {format(endDate, "h:mm a")}
               </span>
               <span className="flex items-center gap-1.5">
-                <MapPin className="h-3.5 w-3.5 text-slate-400" />
+                <MapPin className="h-3.5 w-3.5" />
                 {venueName}
               </span>
-            </CardDescription>
-          </CardHeader>
-        </Card>
+            </div>
+          </div>
+        </Folder>
 
-        <Card className="border-slate-200 bg-slate-900 text-white flex flex-col justify-center">
-          <CardContent className="py-5 px-6 space-y-3">
-            <div className="flex items-center justify-between text-slate-300 text-xs">
-              <span className="flex items-center gap-1.5 font-medium">
+        <div className="bg-[#BFE5CF] border-2 border-ink rounded-[3px] p-5 shadow-hard flex flex-col justify-center rotate-0.5">
+          <div className="space-y-3">
+            <div className="flex items-center justify-between font-mono text-xs text-ink uppercase tracking-wider font-bold">
+              <span className="flex items-center gap-1.5">
                 <Users className="h-4 w-4" /> Attendance Turnout
               </span>
-              <span className="font-bold text-white text-sm">
+              <span className="font-pixel text-base">
                 {attendanceRate}%
               </span>
             </div>
             <div className="flex items-baseline gap-2">
-              <span className="text-3xl font-extrabold text-white">
+              <span className="font-pixel text-4xl text-ink">
                 {attendedCount}
               </span>
-              <span className="text-slate-400 text-sm">
+              <span className="font-mono text-xs text-ink/80">
                 / {totalRegistered} registered
               </span>
             </div>
-            <div className="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
+            <div className="w-full bg-paper border border-ink rounded-full h-3 overflow-hidden p-0.5">
               <div
-                className="bg-emerald-400 h-2 rounded-full transition-all duration-300"
+                className="bg-ink h-full rounded-full transition-all duration-300"
                 style={{ width: `${attendanceRate}%` }}
               />
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
 
       {/* Main Grid: Scanner Left, Attendee List Right */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Scanner Column */}
         <div className="lg:col-span-5 space-y-4">
-          <Card className="border-slate-200 overflow-hidden shadow-xs">
-            <CardHeader className="p-4 border-b border-slate-100 flex flex-row items-center justify-between">
+          <div className="border-2 border-ink rounded-[3px] bg-paper shadow-hard overflow-hidden">
+            <div className="p-4 border-b-2 border-ink bg-paper-cream flex flex-row items-center justify-between">
               <div>
-                <CardTitle className="text-sm font-semibold flex items-center gap-2">
-                  <Camera className="h-4 w-4 text-slate-600" /> Camera Scanner
-                </CardTitle>
-                <CardDescription className="text-xs mt-0.5">
-                  Point camera at student&apos;s ticket QR code
-                </CardDescription>
+                <h3 className="font-pixel text-sm flex items-center gap-2 uppercase tracking-tight text-ink">
+                  <Camera className="h-4 w-4" /> Camera Scanner
+                </h3>
+                <p className="font-hand text-sm text-muted-ink">
+                  point camera at student&apos;s ticket QR code
+                </p>
               </div>
               <Button
                 size="sm"
-                variant={cameraActive ? "outline" : "default"}
+                variant={cameraActive ? "outline" : "yellow"}
                 onClick={() => setCameraActive((prev) => !prev)}
                 className="text-xs h-7"
               >
-                {cameraActive ? "Pause" : "Resume"}
+                {cameraActive ? "PAUSE" : "RESUME"}
               </Button>
-            </CardHeader>
+            </div>
 
-            <CardContent className="p-4 space-y-4">
-              <div className="relative rounded-xl overflow-hidden bg-black flex items-center justify-center min-h-[260px] aspect-square max-h-[340px] mx-auto border border-slate-800">
+            <div className="p-4 space-y-4">
+              <div className="relative rounded-[3px] overflow-hidden bg-black flex items-center justify-center min-h-[260px] aspect-square max-h-[340px] mx-auto border-2 border-ink shadow-hard-sm">
                 {cameraActive ? (
                   <Scanner
                     onScan={handleScan}
@@ -294,10 +308,10 @@ export function AttendanceScanner({
                 ) : (
                   <div className="flex flex-col items-center justify-center text-slate-400 gap-2 p-6 text-center">
                     <Camera className="h-10 w-10 text-slate-600" />
-                    <p className="text-xs">Camera is paused.</p>
+                    <p className="font-mono text-xs text-white">Camera is paused.</p>
                     <Button
                       size="sm"
-                      variant="secondary"
+                      variant="yellow"
                       onClick={() => setCameraActive(true)}
                       className="mt-2 text-xs"
                     >
@@ -307,7 +321,7 @@ export function AttendanceScanner({
                 )}
 
                 {isProcessing && (
-                  <div className="absolute inset-0 bg-black/60 flex items-center justify-center backdrop-blur-xs text-white text-xs font-medium">
+                  <div className="absolute inset-0 bg-black/75 flex items-center justify-center text-white font-mono text-xs font-bold uppercase tracking-wider">
                     Verifying pass...
                   </div>
                 )}
@@ -315,72 +329,73 @@ export function AttendanceScanner({
 
               {/* Scan Feedback Banner */}
               {scanFeedback.type === "success" && (
-                <Alert className="border-emerald-200 bg-emerald-50 text-emerald-900">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-600" />
-                  <AlertTitle className="text-sm font-semibold text-emerald-900">
-                    {scanFeedback.message}
-                  </AlertTitle>
-                  <AlertDescription className="text-xs text-emerald-800 mt-1">
+                <div className="border-2 border-ink bg-[#BFE5CF] p-3 rounded-[3px] shadow-hard-sm space-y-1">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-ink shrink-0" />
+                    <p className="font-mono font-bold text-xs uppercase tracking-wider text-ink">
+                      {scanFeedback.message}
+                    </p>
+                  </div>
+                  <div className="font-mono text-xs text-ink/80 pl-6">
                     <span className="font-bold">{scanFeedback.studentName}</span>
                     {scanFeedback.department && (
-                      <span className="text-emerald-700">
-                        {" "}
-                        • {scanFeedback.department}
-                      </span>
+                      <span> • {scanFeedback.department}</span>
                     )}
-                  </AlertDescription>
-                </Alert>
+                  </div>
+                </div>
               )}
 
               {scanFeedback.type === "error" && (
-                <Alert variant="destructive">
-                  <XCircle className="h-4 w-4" />
-                  <AlertTitle className="text-sm font-semibold">
-                    Scan Rejected
-                  </AlertTitle>
-                  <AlertDescription className="text-xs mt-1">
+                <div className="border-2 border-ink bg-[#FDF2F4] p-3 rounded-[3px] shadow-hard-sm space-y-1">
+                  <div className="flex items-center gap-2">
+                    <XCircle className="h-4 w-4 text-[#E8573A] shrink-0" />
+                    <p className="font-mono font-bold text-xs uppercase tracking-wider text-[#E8573A]">
+                      Scan Rejected
+                    </p>
+                  </div>
+                  <p className="font-mono text-xs text-ink pl-6">
                     {scanFeedback.message}
-                  </AlertDescription>
-                </Alert>
+                  </p>
+                </div>
               )}
 
               {scanFeedback.type === "idle" && (
-                <div className="text-xs text-center text-muted-foreground py-2 border border-dashed rounded-lg bg-slate-50/50">
-                  Ready to scan passes. Check-in window opens 1 hr before event.
+                <div className="font-mono text-xs text-center text-muted-ink py-2 border-2 border-dashed border-ink rounded-[3px] bg-paper-cream">
+                  Ready to scan passes • Window opens 1 hr before start
                 </div>
               )}
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </div>
 
         {/* Attendance List Column */}
         <div className="lg:col-span-7 space-y-4">
-          <Card className="border-slate-200 shadow-xs flex flex-col h-full">
-            <CardHeader className="p-4 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="border-2 border-ink rounded-[3px] bg-paper shadow-hard flex flex-col h-full overflow-hidden">
+            <div className="p-4 border-b-2 border-ink bg-paper-cream flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
-                <CardTitle className="text-base font-semibold text-slate-900">
-                  Attendee Roster
-                </CardTitle>
-                <CardDescription className="text-xs">
-                  Toggle manual attendance or search students
-                </CardDescription>
+                <h3 className="font-pixel text-base uppercase tracking-tight text-ink">
+                  ATTENDEE ROSTER
+                </h3>
+                <p className="font-hand text-sm text-muted-ink">
+                  toggle manual check-in or filter students
+                </p>
               </div>
 
               <div className="relative w-full sm:w-64">
-                <Search className="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-muted-foreground" />
+                <Search className="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-muted-ink" />
                 <Input
                   placeholder="Search name, email..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="pl-8 h-8 text-xs bg-slate-50 border-slate-200"
+                  className="pl-8 h-8 text-xs bg-paper border-2 border-ink shadow-hard-sm"
                 />
               </div>
-            </CardHeader>
+            </div>
 
-            <CardContent className="p-0 flex-1 overflow-x-auto">
+            <div className="p-0 flex-1 overflow-x-auto">
               <Table>
                 <TableHeader>
-                  <TableRow className="bg-slate-50/80 hover:bg-slate-50/80">
+                  <TableRow className="bg-paper-cream hover:bg-paper-cream">
                     <TableHead className="w-12 text-center">Status</TableHead>
                     <TableHead>Student</TableHead>
                     <TableHead>Email</TableHead>
@@ -422,12 +437,12 @@ export function AttendanceScanner({
                           </TableCell>
                           <TableCell className="text-right text-xs py-3">
                             {reg.attendedAt ? (
-                              <span className="inline-flex items-center gap-1 font-medium text-emerald-700 bg-emerald-100/70 px-2 py-0.5 rounded text-[11px]">
+                              <span className="inline-flex items-center gap-1 font-mono font-bold text-ink bg-[#BFE5CF] border border-ink px-2 py-0.5 rounded-[2px] text-[10px]">
                                 <Check className="h-3 w-3" />
                                 {format(new Date(reg.attendedAt), "h:mm a")}
                               </span>
                             ) : (
-                              <span className="text-slate-400 text-[11px]">
+                              <span className="font-mono text-muted-ink text-[11px]">
                                 Unchecked
                               </span>
                             )}
@@ -439,7 +454,7 @@ export function AttendanceScanner({
                     <TableRow>
                       <TableCell
                         colSpan={4}
-                        className="h-32 text-center text-muted-foreground text-xs"
+                        className="h-32 text-center font-mono text-muted-ink text-xs"
                       >
                         {search
                           ? "No attendees match your search query."
@@ -449,8 +464,8 @@ export function AttendanceScanner({
                   )}
                 </TableBody>
               </Table>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </div>
       </div>
     </div>

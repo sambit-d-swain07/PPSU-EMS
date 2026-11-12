@@ -1,14 +1,14 @@
 import { LogoutButton } from "@/components/logout-button";
-import { Badge } from "@/components/ui/badge";
+import { Sticker } from "@/components/ui-theme/sticker";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { GraduationCap, KeyRound, Users, LayoutDashboard } from "lucide-react";
+import { LayoutDashboard, Users, KeyRound } from "lucide-react";
 
 interface AppNavbarProps {
   userName: string;
   role: "ADMIN" | "ORGANIZER" | "STUDENT" | string;
   subtitle?: string;
-  activeNav?: "dashboard" | "users";
+  activeNav?: "dashboard" | "users" | "analytics" | string;
   children?: React.ReactNode;
 }
 
@@ -16,62 +16,59 @@ export function AppNavbar({
   userName,
   role,
   subtitle,
-  activeNav,
+  activeNav = "dashboard",
   children,
 }: AppNavbarProps) {
-  const roleBadgeVariant =
-    role === "ADMIN"
-      ? "destructive"
-      : role === "ORGANIZER"
-      ? "warning"
-      : "secondary";
-
   const homeHref =
     role === "ADMIN" ? "/admin" : role === "ORGANIZER" ? "/organizer" : "/student/events";
 
+  const roleStickerColor =
+    role === "ADMIN" ? "pink" : role === "ORGANIZER" ? "yellow" : "mint";
+
   return (
-    <header className="sticky top-0 z-40 border-b bg-white/95 backdrop-blur-xs shadow-2xs">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-4">
+    <header className="sticky top-0 z-40 bg-white border-b-2 border-ink">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-2.5 flex items-center justify-between gap-4">
+        {/* Brand & Nav */}
         <div className="flex items-center gap-6">
           <Link
             href={homeHref}
-            className="flex items-center gap-2 group transition-opacity hover:opacity-90"
+            className="flex items-center gap-2 group select-none"
           >
-            <div className="h-9 w-9 rounded-lg bg-slate-900 text-white flex items-center justify-center font-bold text-sm shadow-xs">
-              <GraduationCap className="h-5 w-5 text-indigo-300" />
+            <div className="h-8 w-8 rounded-[3px] border-2 border-ink bg-[#111111] text-white flex items-center justify-center font-pixel text-sm font-bold shadow-hard-sm">
+              U
             </div>
-            <div className="hidden sm:block">
-              <div className="text-sm font-bold text-slate-900 tracking-tight leading-none">
-                PPSU Events
-              </div>
-              <div className="text-[11px] text-slate-500 font-medium">
-                {subtitle || "Campus Portal"}
-              </div>
+            <div>
+              <span className="font-pixel text-sm font-bold block leading-none tracking-tight text-ink">
+                PPSU.EVENTS
+              </span>
+              <span className="font-hand text-xs text-muted-ink">
+                {subtitle || "campus portal"}
+              </span>
             </div>
           </Link>
 
           {role === "ADMIN" && (
-            <nav className="flex items-center space-x-1 sm:space-x-2">
+            <nav className="flex items-center space-x-1.5">
               <Link
                 href="/admin"
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs sm:text-sm font-medium transition-colors ${
-                  activeNav === "dashboard" || !activeNav
-                    ? "bg-slate-100 text-slate-900"
-                    : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
+                className={`flex items-center gap-1.5 px-3 py-1 rounded-[3px] border-2 border-ink font-mono-label transition-all ${
+                  activeNav === "dashboard"
+                    ? "bg-[#F6C945] text-ink shadow-hard-sm font-bold"
+                    : "bg-white text-ink hover:bg-paper"
                 }`}
               >
-                <LayoutDashboard className="h-3.5 w-3.5" />
+                <LayoutDashboard className="h-3 w-3" />
                 <span>Dashboard</span>
               </Link>
               <Link
                 href="/admin/users"
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs sm:text-sm font-medium transition-colors ${
+                className={`flex items-center gap-1.5 px-3 py-1 rounded-[3px] border-2 border-ink font-mono-label transition-all ${
                   activeNav === "users"
-                    ? "bg-slate-100 text-slate-900"
-                    : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
+                    ? "bg-[#F6C945] text-ink shadow-hard-sm font-bold"
+                    : "bg-white text-ink hover:bg-paper"
                 }`}
               >
-                <Users className="h-3.5 w-3.5" />
+                <Users className="h-3 w-3" />
                 <span>Users</span>
               </Link>
             </nav>
@@ -80,20 +77,26 @@ export function AppNavbar({
 
         {children && <div className="hidden md:flex items-center gap-2">{children}</div>}
 
+        {/* User Info & Actions */}
         <div className="flex items-center gap-2.5">
-          <div className="text-right hidden sm:block">
-            <p className="text-xs font-semibold text-slate-900 leading-tight">
+          <div className="hidden sm:flex items-center gap-2">
+            <span className="font-hand text-base text-ink font-bold">
               {userName}
-            </p>
-            <Badge variant={roleBadgeVariant} className="text-[10px] uppercase font-bold tracking-wider py-0 px-1.5 h-4">
+            </span>
+            <Sticker color={roleStickerColor} rotate={-1}>
               {role}
-            </Badge>
+            </Sticker>
           </div>
 
-          <Button variant="ghost" size="sm" asChild className="h-8 px-2 text-xs text-slate-600 hover:text-slate-900">
+          <Button
+            variant="outline"
+            size="sm"
+            asChild
+            className="h-8 px-2.5 text-[11px] font-mono-label"
+          >
             <Link href="/account/password" title="Change Password">
-              <KeyRound className="h-3.5 w-3.5 mr-1 text-slate-500" />
-              <span className="hidden md:inline">Password</span>
+              <KeyRound className="h-3 w-3 sm:mr-1" />
+              <span className="hidden sm:inline">PASS</span>
             </Link>
           </Button>
 

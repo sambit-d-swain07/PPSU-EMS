@@ -1,7 +1,9 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { EventForm } from "@/components/event-form";
-import { LogoutButton } from "@/components/logout-button";
+import { AppNavbar } from "@/components/app-navbar";
+import { Folder } from "@/components/ui-theme/folder";
+import { PixelHeading } from "@/components/ui-theme/pixel-heading";
 import { notFound, redirect } from "next/navigation";
 
 interface EditEventPageProps {
@@ -38,37 +40,25 @@ export default async function EditEventPage({ params }: EditEventPageProps) {
   });
 
   return (
-    <div className="min-h-screen bg-slate-50/50">
-      <header className="border-b bg-white">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="h-8 w-8 rounded bg-primary text-primary-foreground flex items-center justify-center font-bold text-sm tracking-wider">
-              U
-            </div>
-            <div>
-              <h1 className="text-base font-bold text-slate-900 leading-tight">
-                Edit Event
-              </h1>
-              <span className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">
-                Event Organizer Portal
-              </span>
-            </div>
-          </div>
-          <LogoutButton />
-        </div>
-      </header>
+    <div className="min-h-screen">
+      <AppNavbar
+        userName={session.user.name || "Organizer"}
+        role="ORGANIZER"
+        subtitle="Edit Proposal"
+      />
 
-      <main className="max-w-6xl mx-auto px-6 py-8">
-        <div className="bg-white rounded-xl border border-slate-200 p-6 md:p-8 shadow-xs">
-          <div className="mb-6">
-            <h2 className="text-xl font-bold tracking-tight text-slate-900">
-              Edit Event Proposal
-            </h2>
-            <p className="text-sm text-muted-foreground">
-              Update the details of &quot;{event.title}&quot;. Resubmitting will
-              place the event back into Pending review.
-            </p>
-          </div>
+      <main className="max-w-4xl mx-auto px-4 sm:px-6 py-8 space-y-6">
+        <PixelHeading
+          title="EDIT EVENT PROPOSAL"
+          caption={`updating draft/revision for "${event.title}"`}
+        />
+
+        <Folder
+          tabTitle="EDIT PROPOSAL"
+          tabPosition="left"
+          color="paper"
+          className="p-6 md:p-8"
+        >
           <EventForm
             venues={venues}
             eventId={event.id}
@@ -85,7 +75,7 @@ export default async function EditEventPage({ params }: EditEventPageProps) {
               reviewRemark: event.reviewRemark,
             }}
           />
-        </div>
+        </Folder>
       </main>
     </div>
   );

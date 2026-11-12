@@ -125,25 +125,25 @@ export function EventForm({ venues, eventId, initialData }: EventFormProps) {
   return (
     <div className="space-y-6 max-w-2xl">
       <div className="flex items-center gap-2">
-        <Button variant="ghost" size="sm" asChild>
+        <Button variant="outline" size="sm" asChild className="font-mono text-xs">
           <Link href="/organizer">
-            <ArrowLeft className="h-4 w-4 mr-1" /> Back to My Events
+            <ArrowLeft className="h-4 w-4 mr-1" /> BACK TO MY EVENTS
           </Link>
         </Button>
       </div>
 
       {initialData?.status === "REJECTED" && initialData.reviewRemark && (
-        <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-800">
+        <div className="rounded-[3px] border-2 border-ink bg-[#FDF2F4] p-4 text-xs font-mono text-ink shadow-hard-sm">
           <div className="flex items-start gap-2">
-            <AlertCircle className="h-5 w-5 text-red-600 shrink-0 mt-0.5" />
+            <AlertCircle className="h-5 w-5 text-[#E8573A] shrink-0 mt-0.5" />
             <div>
-              <p className="font-semibold text-red-900">
+              <p className="font-bold text-ink uppercase tracking-wider">
                 Event was rejected by reviewer
               </p>
-              <p className="mt-1 text-red-700">
+              <p className="mt-1 text-ink">
                 <strong>Remark:</strong> {initialData.reviewRemark}
               </p>
-              <p className="mt-2 text-xs text-red-600">
+              <p className="mt-2 text-[11px] text-muted-ink">
                 You can address the reviewer&apos;s feedback below and resubmit
                 for approval.
               </p>
@@ -346,21 +346,22 @@ export function EventForm({ venues, eventId, initialData }: EventFormProps) {
             )}
           />
 
-          <div className="flex items-center gap-3 pt-4 border-t border-slate-200">
+          <div className="flex items-center gap-3 pt-4 border-t-2 border-ink">
             <Button
               type="button"
               variant="outline"
               disabled={isPending}
               onClick={() => handleSubmit(false)}
             >
-              {isPending ? "Saving..." : "Save as draft"}
+              {isPending ? "SAVING..." : "SAVE AS DRAFT"}
             </Button>
             <Button
               type="button"
+              variant="yellow"
               disabled={isPending}
               onClick={() => handleSubmit(true)}
             >
-              {isPending ? "Submitting..." : "Submit for approval"}
+              {isPending ? "SUBMITTING..." : "SUBMIT FOR APPROVAL"}
             </Button>
           </div>
         </form>

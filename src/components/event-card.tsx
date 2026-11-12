@@ -1,16 +1,17 @@
 import Link from "next/link";
-import Image from "next/image";
 import { format } from "date-fns";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
-import { MapPin, Calendar, Users } from "lucide-react";
+import { Folder, type FolderColor } from "@/components/ui-theme/folder";
+import { Polaroid } from "@/components/ui-theme/polaroid";
+import { Sticker } from "@/components/ui-theme/sticker";
+import { MapPin, Users, ArrowUpRight } from "lucide-react";
 
 export interface EventCardData {
   id: string;
   title: string;
+  description?: string;
   category: string;
   posterUrl?: string | null;
-  startsAt: Date;
+  startsAt: Date | string;
   capacity: number;
   venue: {
     name: string;
@@ -22,88 +23,115 @@ export interface EventCardData {
 
 interface EventCardProps {
   event: EventCardData;
+  index?: number;
 }
 
-export function EventCard({ event }: EventCardProps) {
+const folderColors: FolderColor[] = ["paper", "ink", "yellow", "cream"];
+
+export function EventCard({ event, index = 0 }: EventCardProps) {
   const seatsLeft = Math.max(0, event.capacity - event._count.registrations);
   const isSoldOut = seatsLeft === 0;
+  const folderColor = folderColors[index % folderColors.length];
+  const isInk = folderColor === "ink";
+
+  const dateLabel = format(new Date(event.startsAt), "MMM d, yyyy").toUpperCase();
+  const timeLabel = format(new Date(event.startsAt), "h:mm a");
 
   return (
     <Link
       href={`/student/events/${event.id}`}
-      className="group block transition-transform duration-200 hover:-translate-y-0.5"
+      className="group block transition-transform duration-200 hover:-translate-y-1 hover-tilt"
     >
-      <Card className="h-full flex flex-col overflow-hidden border-slate-200 bg-white shadow-2xs hover:shadow-md transition-shadow">
-        {/* Poster Image / Fallback Header */}
-        <div className="relative w-full h-44 bg-slate-100 overflow-hidden shrink-0 border-b border-slate-100">
-          {event.posterUrl ? (
-            <Image
+      <Folder
+        tab={dateLabel}
+        tabSide={index % 2 === 0 ? "left" : "right"}
+        color={folderColor}
+        className="h-full"
+        contentClassName="flex flex-col h-full justify-between space-y-4"
+      >
+        <div className="space-y-4">
+          {/* Polaroid Poster Image */}
+          <div className="flex justify-center pt-1">
+            <Polaroid
               src={event.posterUrl}
               alt={event.title}
-              fill
-              className="object-cover group-hover:scale-105 transition-transform duration-300"
+              caption={event.category}
+              rotate={index % 2 === 0 ? -1.5 : 1.5}
+              tapeColor={index % 2 === 0 ? "blue" : "pink"}
+              className="w-full max-w-[280px]"
+              imageClassName="h-36 sm:h-40"
             />
-          ) : (
-            <div className="w-full h-full flex flex-col items-center justify-center bg-slate-900 text-white p-4 text-center">
-              <span className="text-2xl font-black tracking-widest text-white/20 select-none">
-                CAMPUS
-              </span>
-              <span className="text-xs uppercase font-medium tracking-wider text-slate-300 mt-1">
-                {event.category}
-              </span>
-            </div>
-          )}
-
-          <div className="absolute top-2.5 left-2.5">
-            <Badge variant="secondary" className="shadow-xs bg-white/95 text-slate-800 backdrop-blur-xs">
-              {event.category}
-            </Badge>
           </div>
 
-          <div className="absolute top-2.5 right-2.5">
-            {isSoldOut ? (
-              <Badge variant="destructive" className="shadow-xs">
-                Full
-              </Badge>
-            ) : seatsLeft <= 10 ? (
-              <Badge variant="warning" className="shadow-xs bg-amber-500 text-white">
-                Only {seatsLeft} left
-              </Badge>
-            ) : (
-              <Badge variant="success" className="shadow-xs">
-                {seatsLeft} seats left
-              </Badge>
+          {/* Event Information */}
+          <div className="space-y-1.5 px-1">
+            <div className="flex items-center gap-2 flex-wrap">
+              <Sticker
+                color={
+                  event.category === "TECHNICAL"
+                    ? "blue"
+                    : event.category === "CULTURAL"
+                    ? "pink"
+                    : event.category === "SPORTS"
+                    ? "mint"
+                    : "yellow"
+                }
+              >
+                {event.category}
+              </Sticker>
+              <span className={`text-[11px] font-mono ${isInk ? "text-slate-300" : "text-muted-ink"}`}>
+                {timeLabel}
+              </span>
+            </div>
+
+            <h3
+              className={`font-sans font-bold text-lg sm:text-xl line-clamp-1 leading-snug tracking-tight ${
+                isInk ? "text-white" : "text-ink"
+              }`}
+            >
+              {event.title}
+            </h3>
+
+            {event.description && (
+              <p
+                className={`text-xs line-clamp-2 leading-relaxed ${
+                  isInk ? "text-slate-300" : "text-muted-ink"
+                }`}
+              >
+                {event.description}
+              </p>
             )}
           </div>
         </div>
 
-        {/* Content */}
-        <CardContent className="p-4 flex-1 flex flex-col justify-between space-y-3">
-          <div>
-            <h3 className="font-bold text-slate-900 text-base line-clamp-2 group-hover:text-primary transition-colors leading-snug">
-              {event.title}
-            </h3>
+        {/* Footer / Meta Row */}
+        <div
+          className={`pt-3 border-t flex items-center justify-between text-xs px-1 ${
+            isInk ? "border-white/20" : "border-ink/20"
+          }`}
+        >
+          <div className="flex items-center gap-2 flex-wrap">
+            <Sticker color={isInk ? "paper" : "cream"}>
+              <MapPin className="h-3 w-3 mr-0.5 inline" /> {event.venue.name}
+            </Sticker>
+
+            <Sticker color={isSoldOut ? "pink" : "mint"}>
+              <Users className="h-3 w-3 mr-0.5 inline" />{" "}
+              {isSoldOut ? "FULL" : `${seatsLeft} SEATS`}
+            </Sticker>
           </div>
 
-          <div className="space-y-1.5 text-xs text-slate-600 pt-1 border-t border-slate-100">
-            <div className="flex items-center gap-2">
-              <Calendar className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
-              <span>{format(new Date(event.startsAt), "EEE, MMM d, yyyy • h:mm a")}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <MapPin className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
-              <span className="truncate">{event.venue.name}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Users className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
-              <span>
-                {event._count.registrations} / {event.capacity} registered
-              </span>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+          <span
+            className={`font-mono-label underline flex items-center gap-0.5 shrink-0 ${
+              isInk
+                ? "text-[#F6C945] group-hover:text-white"
+                : "text-ink group-hover:text-[#2347D6]"
+            }`}
+          >
+            VIEW EVENT <ArrowUpRight className="h-3 w-3" />
+          </span>
+        </div>
+      </Folder>
     </Link>
   );
 }
-

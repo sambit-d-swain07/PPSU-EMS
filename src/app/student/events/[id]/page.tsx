@@ -3,19 +3,13 @@ import { prisma } from "@/lib/prisma";
 import { redirect, notFound } from "next/navigation";
 import { StudentNav } from "@/components/student-nav";
 import { RegistrationButton } from "@/components/registration-button";
-import { Badge } from "@/components/ui/badge";
+import { Folder } from "@/components/ui-theme/folder";
+import { Polaroid } from "@/components/ui-theme/polaroid";
+import { Sticker } from "@/components/ui-theme/sticker";
 import { Button } from "@/components/ui/button";
-import Image from "next/image";
 import Link from "next/link";
 import { format } from "date-fns";
-import {
-  Calendar,
-  MapPin,
-  Users,
-  ArrowLeft,
-  Clock,
-  User as UserIcon,
-} from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 
 interface EventDetailPageProps {
   params: Promise<{ id: string }>;
@@ -52,7 +46,6 @@ export default async function EventDetailPage({
     notFound();
   }
 
-  // Check if current user is registered
   const userRegistration = await prisma.registration.findUnique({
     where: {
       eventId_userId: {
@@ -67,153 +60,149 @@ export default async function EventDetailPage({
   const isFull = seatsLeft === 0;
   const hasStarted = new Date(event.startsAt).getTime() <= Date.now();
 
+  const statusLabel = hasStarted
+    ? "CONCLUDED"
+    : isFull
+    ? "FULL CAPACITY"
+    : `${seatsLeft} SEATS OPEN`;
+
+  const statusColor = hasStarted ? "cream" : isFull ? "pink" : "mint";
+
   return (
-    <div className="min-h-screen bg-slate-50/50 flex flex-col">
+    <div className="min-h-screen flex flex-col">
       <StudentNav userName={session.user.name || "Student"} />
 
       <main className="max-w-4xl w-full mx-auto px-4 sm:px-6 py-8 flex-1 space-y-6">
         <div>
-          <Button variant="ghost" size="sm" asChild className="mb-4">
+          <Button
+            variant="outline"
+            size="sm"
+            asChild
+            className="mb-2"
+          >
             <Link href="/student/events">
-              <ArrowLeft className="h-4 w-4 mr-1.5" /> Back to all events
+              <ArrowLeft className="h-3.5 w-3.5 mr-1" /> BACK TO EVENTS
             </Link>
           </Button>
         </div>
 
-        <article className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-2xs">
-          {/* Header Poster */}
-          {event.posterUrl ? (
-            <div className="relative w-full h-64 sm:h-80 bg-slate-100">
-              <Image
-                src={event.posterUrl}
-                alt={event.title}
-                fill
-                priority
-                className="object-cover"
-              />
-            </div>
-          ) : (
-            <div className="w-full h-40 bg-slate-900 text-white flex items-center justify-center p-6 text-center">
-              <div>
-                <span className="text-3xl font-black tracking-widest text-white/20 select-none block">
-                  CAMPUS EVENT
-                </span>
-                <span className="text-xs uppercase font-medium tracking-wider text-slate-300 mt-1 inline-block">
-                  {event.category}
-                </span>
-              </div>
-            </div>
-          )}
-
-          <div className="p-6 sm:p-8 space-y-6">
-            <div className="space-y-2">
+        {/* Signature Event Folder */}
+        <Folder
+          tab={statusLabel}
+          tabSide="right"
+          color="paper"
+          className="w-full"
+        >
+          <div className="space-y-6">
+            {/* Header / Title */}
+            <div className="space-y-2 border-b-2 border-ink/20 pb-4">
               <div className="flex flex-wrap items-center gap-2">
-                <Badge variant="secondary">{event.category}</Badge>
-                {hasStarted ? (
-                  <Badge variant="outline">Concluded</Badge>
-                ) : isFull ? (
-                  <Badge variant="destructive">Full Capacity</Badge>
-                ) : (
-                  <Badge variant="success">{seatsLeft} seats remaining</Badge>
+                <Sticker color="yellow">{event.category}</Sticker>
+                <Sticker color={statusColor}>{statusLabel}</Sticker>
+                {isRegistered && (
+                  <Sticker color="mint" rotate={1}>
+                    ✓ YOU ARE REGISTERED
+                  </Sticker>
                 )}
               </div>
 
-              <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
+              <h1 className="font-pixel text-2xl sm:text-4xl font-bold text-ink tracking-tight pt-1">
                 {event.title}
               </h1>
             </div>
 
-            {/* Quick Meta Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-slate-50 p-4 rounded-xl border border-slate-100 text-sm">
-              <div className="space-y-1">
-                <span className="text-xs text-muted-foreground flex items-center gap-1 font-medium">
-                  <Calendar className="h-3.5 w-3.5" /> Schedule
-                </span>
-                <p className="font-semibold text-slate-900">
-                  {format(new Date(event.startsAt), "EEE, MMM d, yyyy")}
-                </p>
-                <p className="text-xs text-slate-600 flex items-center gap-1">
-                  <Clock className="h-3 w-3" />
-                  {format(new Date(event.startsAt), "h:mm a")} –{" "}
-                  {format(new Date(event.endsAt), "h:mm a")}
-                </p>
+            {/* Poster & Mono-label details layout */}
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
+              {/* Left: Polaroid Frame */}
+              <div className="md:col-span-5 flex justify-center">
+                <Polaroid
+                  src={event.posterUrl}
+                  alt={event.title}
+                  caption={event.category}
+                  rotate={-2}
+                  tapeColor="blue"
+                  className="w-full max-w-[320px]"
+                  imageClassName="h-56 sm:h-64"
+                />
               </div>
 
-              <div className="space-y-1">
-                <span className="text-xs text-muted-foreground flex items-center gap-1 font-medium">
-                  <MapPin className="h-3.5 w-3.5" /> Location
-                </span>
-                <p className="font-semibold text-slate-900">
-                  {event.venue.name}
-                </p>
-                <p className="text-xs text-slate-600">
-                  Max venue capacity: {event.venue.capacity}
-                </p>
-              </div>
+              {/* Right: Meta Details */}
+              <div className="md:col-span-7 space-y-4">
+                <div className="bg-[#EFE6D2]/60 p-4 rounded-[3px] border-2 border-ink space-y-3 font-mono text-xs">
+                  <div className="flex items-start justify-between border-b border-ink/20 pb-2">
+                    <span className="font-mono-label text-muted-ink">SCHEDULE</span>
+                    <div className="text-right font-bold text-ink">
+                      <p>{format(new Date(event.startsAt), "EEE, MMM d, yyyy")}</p>
+                      <p className="text-[11px] font-normal text-muted-ink">
+                        {format(new Date(event.startsAt), "h:mm a")} – {format(new Date(event.endsAt), "h:mm a")}
+                      </p>
+                    </div>
+                  </div>
 
-              <div className="space-y-1">
-                <span className="text-xs text-muted-foreground flex items-center gap-1 font-medium">
-                  <Users className="h-3.5 w-3.5" /> Seats & Availability
-                </span>
-                <p className="font-semibold text-slate-900">
-                  {event._count.registrations} / {event.capacity} Filled
-                </p>
-                <p className="text-xs text-slate-600">
-                  {seatsLeft > 0 ? `${seatsLeft} spots open` : "No seats left"}
-                </p>
+                  <div className="flex items-start justify-between border-b border-ink/20 pb-2">
+                    <span className="font-mono-label text-muted-ink">LOCATION</span>
+                    <div className="text-right font-bold text-ink">
+                      <p>{event.venue.name}</p>
+                      <p className="text-[11px] font-normal text-muted-ink">
+                        Venue Capacity: {event.venue.capacity}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start justify-between border-b border-ink/20 pb-2">
+                    <span className="font-mono-label text-muted-ink">AVAILABILITY</span>
+                    <div className="text-right font-bold text-ink">
+                      <p>{event._count.registrations} / {event.capacity} Filled</p>
+                      <p className="text-[11px] font-normal text-muted-ink">
+                        {seatsLeft > 0 ? `${seatsLeft} seats remaining` : "Full capacity"}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start justify-between">
+                    <span className="font-mono-label text-muted-ink">ORGANIZER</span>
+                    <div className="text-right font-bold text-ink">
+                      <p>{event.organizer.name}</p>
+                      <p className="text-[11px] font-normal text-muted-ink">
+                        {event.organizer.department || "Student Affairs"}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Registration Action Box */}
+                <div className="p-4 bg-white border-2 border-ink rounded-[3px] shadow-hard-sm space-y-3">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="font-mono-label text-ink">REGISTRATION STATUS</span>
+                    <span className="font-hand text-sm text-ink">
+                      {isRegistered ? "Ticket confirmed" : isFull ? "Sold out" : "Open for booking"}
+                    </span>
+                  </div>
+
+                  <RegistrationButton
+                    eventId={event.id}
+                    eventTitle={event.title}
+                    isRegistered={isRegistered}
+                    isFull={isFull}
+                    hasStarted={hasStarted}
+                    seatsLeft={seatsLeft}
+                  />
+                </div>
               </div>
             </div>
 
-            {/* Call to Action Bar */}
-            <div className="pt-2 pb-4 border-b border-slate-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-              <div>
-                <p className="text-xs uppercase font-semibold text-muted-foreground tracking-wider">
-                  Registration Status
-                </p>
-                <p className="text-sm font-medium text-slate-900">
-                  {isRegistered
-                    ? "You are confirmed for this event."
-                    : isFull
-                    ? "All seats for this event are currently booked."
-                    : "Seats are currently available for university students."}
-                </p>
-              </div>
-
-              <RegistrationButton
-                eventId={event.id}
-                eventTitle={event.title}
-                isRegistered={isRegistered}
-                isFull={isFull}
-                hasStarted={hasStarted}
-                seatsLeft={seatsLeft}
-              />
-            </div>
-
-            {/* Description */}
-            <div className="space-y-3">
-              <h2 className="text-base font-bold text-slate-900 tracking-tight">
-                About this Event
+            {/* About / Description */}
+            <div className="pt-4 border-t-2 border-ink/20 space-y-2">
+              <h2 className="font-pixel text-lg sm:text-xl font-bold text-ink">
+                ABOUT THIS EVENT
               </h2>
-              <p className="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap">
+              <div className="p-4 bg-paper border border-ink/30 rounded-[3px] text-xs sm:text-sm text-ink leading-relaxed whitespace-pre-wrap font-sans">
                 {event.description}
-              </p>
-            </div>
-
-            {/* Organizer Note */}
-            <div className="pt-6 border-t border-slate-100 text-xs text-slate-500 flex items-center gap-2">
-              <UserIcon className="h-4 w-4 text-slate-400" />
-              <span>
-                Organized by{" "}
-                <strong className="text-slate-700">
-                  {event.organizer.name}
-                </strong>{" "}
-                ({event.organizer.department || "Student Affairs"})
-              </span>
+              </div>
             </div>
           </div>
-        </article>
+        </Folder>
       </main>
     </div>
   );
 }
-

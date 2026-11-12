@@ -8,7 +8,8 @@ import { LineChartCard } from "@/components/analytics/line-chart-card";
 import { ExportCsvButton } from "@/components/analytics/export-csv-button";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Folder } from "@/components/ui-theme/folder";
+import { Sticker } from "@/components/ui-theme/sticker";
 import {
   Table,
   TableBody,
@@ -73,7 +74,7 @@ export default async function EventAnalyticsPage({ params }: EventAnalyticsPageP
   }));
 
   return (
-    <div className="min-h-screen bg-slate-50/50">
+    <div className="min-h-screen">
       <AppNavbar
         userName={session.user.name || "User"}
         role={session.user.role}
@@ -83,62 +84,67 @@ export default async function EventAnalyticsPage({ params }: EventAnalyticsPageP
       <main className="max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-8">
         {/* Back navigation and Event Summary Header */}
         <div className="space-y-4">
-          <Button variant="ghost" size="sm" asChild className="gap-1.5 text-xs text-slate-600 hover:text-slate-900 -ml-2">
+          <Button variant="outline" size="sm" asChild className="gap-1.5 font-mono text-xs">
             <Link href="/organizer">
-              <ArrowLeft className="h-4 w-4" /> Back to My Events
+              <ArrowLeft className="h-4 w-4" /> BACK TO MY EVENTS
             </Link>
           </Button>
 
-          <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-2xs space-y-4">
+          <Folder
+            tabTitle="EVENT REPORT"
+            tabPosition="left"
+            color="paper"
+            className="p-6 space-y-4"
+          >
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
-                <div className="flex items-center gap-2 flex-wrap mb-1.5">
-                  <Badge variant="outline">{event.category}</Badge>
-                  <Badge
+                <div className="flex items-center gap-2 flex-wrap mb-2">
+                  <Sticker variant="cream">{event.category}</Sticker>
+                  <Sticker
                     variant={
                       event.status === "APPROVED"
-                        ? "success"
+                        ? "approved"
                         : event.status === "PENDING"
-                        ? "warning"
-                        : "secondary"
+                        ? "pending"
+                        : "draft"
                     }
                   >
                     {event.status}
-                  </Badge>
+                  </Sticker>
                 </div>
-                <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
+                <h1 className="font-pixel text-2xl sm:text-3xl tracking-tight text-ink uppercase">
                   {event.title}
                 </h1>
               </div>
 
               <div className="flex items-center gap-2">
-                <Button size="sm" variant="outline" asChild className="text-xs">
+                <Button size="sm" variant="yellow" asChild className="text-xs">
                   <Link href={`/organizer/events/${event.id}/attendance`}>
-                    <UserCheck className="h-3.5 w-3.5 mr-1 text-slate-600" /> Scanner & Attendance
+                    <UserCheck className="h-3.5 w-3.5 mr-1" /> CHECK-IN SCANNER
                   </Link>
                 </Button>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-3 border-t border-slate-100 text-xs text-slate-600">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-4 border-t-2 border-ink font-mono text-xs text-muted-ink">
               <div className="flex items-center gap-2">
-                <Calendar className="h-4 w-4 text-slate-400 shrink-0" />
+                <Calendar className="h-4 w-4 text-ink shrink-0" />
                 <span>
                   {format(new Date(event.startsAt), "EEE, MMM d, yyyy • h:mm a")}
                 </span>
               </div>
               <div className="flex items-center gap-2">
-                <MapPin className="h-4 w-4 text-slate-400 shrink-0" />
+                <MapPin className="h-4 w-4 text-ink shrink-0" />
                 <span>
-                  {event.venue.name} (Capacity: {event.venue.capacity})
+                  {event.venue.name} (Cap: {event.venue.capacity})
                 </span>
               </div>
               <div className="flex items-center gap-2">
-                <Sparkles className="h-4 w-4 text-slate-400 shrink-0" />
-                <span>Organized by {event.organizer.name}</span>
+                <Sparkles className="h-4 w-4 text-ink shrink-0" />
+                <span>By {event.organizer.name}</span>
               </div>
             </div>
-          </div>
+          </Folder>
         </div>
 
         {/* Stat Cards */}
@@ -148,37 +154,45 @@ export default async function EventAnalyticsPage({ params }: EventAnalyticsPageP
             value={`${stats.registrations} / ${event.capacity}`}
             description={`${fillRate}% capacity filled`}
             icon={Users}
+            color="yellow"
+            rotation="-rotate-1"
           />
           <StatCard
             title="Seats Remaining"
             value={stats.seatsLeft}
-            description={stats.seatsLeft === 0 ? "Event is fully booked" : "Available slots"}
+            description={stats.seatsLeft === 0 ? "Fully booked" : "Available slots"}
             icon={Clock}
+            color="mint"
+            rotation="rotate-1"
           />
           <StatCard
             title="Attendance Rate"
             value={`${stats.attendanceRate}%`}
             description={`${stats.attendedCount} attended • ${stats.unattendedCount} absent`}
             icon={CheckCircle2}
+            color="cream"
+            rotation="-rotate-0.5"
           />
           <StatCard
             title="Avg Rating"
             value={stats.avgRating ? `${stats.avgRating} / 5` : "N/A"}
-            description={`${stats.feedbackCount} feedback submission${stats.feedbackCount === 1 ? "" : "s"}`}
+            description={`${stats.feedbackCount} feedback review${stats.feedbackCount === 1 ? "" : "s"}`}
             icon={Star}
+            color="pink"
+            rotation="rotate-0.5"
           />
         </div>
 
         {/* Charts Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           <div className="md:col-span-2">
             <LineChartCard
               title="Registrations Over Time"
               description="Cumulative student registration sign-ups"
               data={data.registrationsTimeline}
               dataKeys={[
-                { key: "total", name: "Cumulative Total", color: "#3b82f6" },
-                { key: "newRegistrations", name: "Daily New", color: "#93c5fd" },
+                { key: "total", name: "Cumulative Total", color: "#2347D6" },
+                { key: "newRegistrations", name: "Daily New", color: "#F0508C" },
               ]}
               emptyMessage="No registrations timeline data available"
             />
@@ -188,83 +202,81 @@ export default async function EventAnalyticsPage({ params }: EventAnalyticsPageP
             title="Attendance Check-In"
             description="Attended vs Absent"
             data={data.attendanceComparison}
-            dataKeys={[{ key: "value", name: "Students", color: "#10b981" }]}
+            dataKeys={[{ key: "value", name: "Students", color: "#19A860" }]}
             emptyMessage="No registrations recorded yet"
           />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           <BarChartCard
             title="Rating Distribution"
             description="Breakdown of 1 to 5 star ratings submitted by attendees"
             data={data.ratingDistribution}
-            dataKeys={[{ key: "count", name: "Attendees", color: "#f59e0b" }]}
+            dataKeys={[{ key: "count", name: "Attendees", color: "#F6C945" }]}
             emptyMessage="No ratings submitted for this event yet"
           />
 
           {/* Recent Feedback Reviews */}
-          <Card className="border border-slate-200 shadow-2xs">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-semibold text-slate-900 flex items-center gap-1.5">
-                <MessageSquare className="h-4 w-4 text-amber-500" /> Anonymous Feedback
-              </CardTitle>
-              <CardDescription className="text-xs">
-                Feedback and suggestions from verified attendees
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
+          <div className="border-2 border-ink rounded-[3px] bg-paper shadow-hard overflow-hidden flex flex-col">
+            <div className="p-4 border-b-2 border-ink bg-paper-cream">
+              <h3 className="font-pixel text-base text-ink uppercase tracking-tight flex items-center gap-1.5">
+                <MessageSquare className="h-4 w-4" /> ANONYMOUS FEEDBACK
+              </h3>
+              <p className="font-hand text-sm text-muted-ink">
+                reviews & suggestions from verified attendees
+              </p>
+            </div>
+            <div className="p-4 flex-1">
               <div className="max-h-[240px] overflow-y-auto space-y-2.5 pr-1">
                 {data.feedbackList.length > 0 ? (
                   data.feedbackList.map((f) => (
                     <div
                       key={f.id}
-                      className="p-3 rounded-lg border border-slate-100 bg-slate-50/60 text-xs space-y-1"
+                      className="p-3 rounded-[3px] border-2 border-ink bg-paper shadow-hard-sm text-xs font-mono space-y-1.5"
                     >
                       <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-0.5 text-amber-500">
+                        <div className="flex items-center gap-0.5">
                           {Array.from({ length: f.rating }).map((_, i) => (
-                            <Star key={i} className="h-3 w-3 fill-amber-400 text-amber-400" />
+                            <Star key={i} className="h-3 w-3 fill-[#F6C945] text-ink" />
                           ))}
                         </div>
-                        <span className="text-[10px] text-slate-400">
+                        <span className="text-[10px] text-muted-ink">
                           {format(new Date(f.createdAt), "MMM d, yyyy")}
                         </span>
                       </div>
-                      <p className="text-slate-700 italic">
-                        {f.comment || <span className="text-slate-400">No written comment provided.</span>}
+                      <p className="text-ink italic">
+                        {f.comment || <span className="text-muted-ink">No written comment provided.</span>}
                       </p>
                     </div>
                   ))
                 ) : (
-                  <div className="h-36 flex items-center justify-center text-xs text-muted-foreground border border-dashed rounded-lg bg-slate-50/50">
+                  <div className="h-36 flex items-center justify-center font-mono text-xs text-muted-ink border-2 border-dashed border-ink rounded-[3px] bg-paper-cream">
                     No attendee feedback submitted yet
                   </div>
                 )}
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </div>
 
         {/* Registered Students Table */}
-        <Card className="border border-slate-200 shadow-2xs">
-          <CardHeader className="pb-3">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              <div>
-                <CardTitle className="text-sm font-semibold text-slate-900">
-                  Registered Attendees ({data.attendees.length})
-                </CardTitle>
-                <CardDescription className="text-xs">
-                  Full list of registered students with attendance and feedback
-                </CardDescription>
-              </div>
-              <ExportCsvButton data={csvRows} filename={`${eventSlug}-attendees.csv`} />
+        <div className="border-2 border-ink rounded-[3px] bg-paper shadow-hard overflow-hidden">
+          <div className="p-4 border-b-2 border-ink bg-paper-cream flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h3 className="font-pixel text-base text-ink uppercase tracking-tight">
+                REGISTERED ATTENDEES ({data.attendees.length})
+              </h3>
+              <p className="font-hand text-sm text-muted-ink">
+                full list of registered students with attendance and feedback
+              </p>
             </div>
-          </CardHeader>
-          <CardContent>
-            <div className="rounded-md border border-slate-100 overflow-x-auto">
+            <ExportCsvButton data={csvRows} filename={`${eventSlug}-attendees.csv`} />
+          </div>
+          <div>
+            <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
-                  <TableRow className="bg-slate-50/75">
+                  <TableRow>
                     <TableHead className="text-xs">Student Name</TableHead>
                     <TableHead className="text-xs">Email</TableHead>
                     <TableHead className="text-xs">Department</TableHead>
@@ -277,44 +289,44 @@ export default async function EventAnalyticsPage({ params }: EventAnalyticsPageP
                   {data.attendees.length > 0 ? (
                     data.attendees.map((attendee) => (
                       <TableRow key={attendee.id}>
-                        <TableCell className="text-xs font-medium text-slate-900">
+                        <TableCell className="font-mono text-xs font-semibold text-ink">
                           {attendee.name}
                         </TableCell>
-                        <TableCell className="text-xs text-slate-600">
+                        <TableCell className="font-mono text-xs text-muted-ink">
                           {attendee.email}
                         </TableCell>
-                        <TableCell className="text-xs text-slate-600">
+                        <TableCell className="font-mono text-xs text-muted-ink">
                           {attendee.department}
                         </TableCell>
-                        <TableCell className="text-xs text-slate-500">
+                        <TableCell className="font-mono text-xs text-muted-ink">
                           {format(new Date(attendee.registeredAt), "MMM d, h:mm a")}
                         </TableCell>
                         <TableCell className="text-xs text-center">
                           {attendee.attendedAt ? (
-                            <Badge variant="success" className="text-[10px] py-0 px-1.5 h-4">
+                            <Badge variant="outline" className="text-[10px] py-0 px-1.5 h-5 bg-[#BFE5CF] border border-ink font-mono text-ink">
                               Attended
                             </Badge>
                           ) : (
-                            <Badge variant="secondary" className="text-[10px] py-0 px-1.5 h-4 text-slate-500">
+                            <Badge variant="secondary" className="text-[10px] py-0 px-1.5 h-5 border border-ink font-mono text-muted-ink">
                               Absent
                             </Badge>
                           )}
                         </TableCell>
                         <TableCell className="text-xs text-right">
                           {attendee.rating ? (
-                            <span className="font-semibold text-amber-600 flex items-center justify-end gap-1">
-                              <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
+                            <span className="font-mono font-bold text-ink flex items-center justify-end gap-1">
+                              <Star className="h-3 w-3 fill-[#F6C945] text-ink" />
                               {attendee.rating}/5
                             </span>
                           ) : (
-                            <span className="text-slate-400">-</span>
+                            <span className="font-mono text-muted-ink">-</span>
                           )}
                         </TableCell>
                       </TableRow>
                     ))
                   ) : (
                     <TableRow>
-                      <TableCell colSpan={6} className="h-24 text-center text-xs text-muted-foreground">
+                      <TableCell colSpan={6} className="h-24 text-center font-mono text-xs text-muted-ink">
                         No students have registered for this event yet.
                       </TableCell>
                     </TableRow>
@@ -322,8 +334,8 @@ export default async function EventAnalyticsPage({ params }: EventAnalyticsPageP
                 </TableBody>
               </Table>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </main>
     </div>
   );

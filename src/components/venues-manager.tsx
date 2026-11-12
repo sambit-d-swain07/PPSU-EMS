@@ -88,44 +88,45 @@ export function VenuesManager({ venues }: VenuesManagerProps) {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h2 className="text-lg font-semibold tracking-tight text-slate-900">
-            University Venues
+          <h2 className="font-pixel text-xl tracking-tight text-ink uppercase">
+            CAMPUS VENUES & FACILITIES
           </h2>
-          <p className="text-xs text-muted-foreground">
-            Manage campus event halls, auditoriums, and facilities.
+          <p className="font-hand text-base text-muted-ink">
+            manage event halls, auditoriums, and capacity limits
           </p>
         </div>
 
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
-            <Button size="sm">
-              <PlusCircle className="h-4 w-4 mr-1.5" /> Add Venue
+            <Button size="sm" variant="yellow" className="self-start sm:self-auto">
+              <PlusCircle className="h-4 w-4 mr-1.5" /> ADD VENUE
             </Button>
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent className="border-2 border-ink bg-paper shadow-hard-lg">
             <DialogHeader>
-              <DialogTitle>Add Campus Venue</DialogTitle>
-              <DialogDescription>
+              <DialogTitle className="font-pixel text-lg">ADD CAMPUS VENUE</DialogTitle>
+              <DialogDescription className="font-mono text-xs text-muted-ink">
                 Create a new location for university events with capacity limits.
               </DialogDescription>
             </DialogHeader>
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-4 py-2"
+                className="space-y-4 py-2 font-mono"
               >
                 <FormField
                   control={form.control}
                   name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Venue Name</FormLabel>
+                      <FormLabel className="text-xs uppercase font-bold text-ink">Venue Name</FormLabel>
                       <FormControl>
                         <Input
                           placeholder="e.g. Science Block Auditorium"
                           disabled={isPending}
+                          className="border-2 border-ink font-mono text-xs"
                           {...field}
                         />
                       </FormControl>
@@ -139,13 +140,14 @@ export function VenuesManager({ venues }: VenuesManagerProps) {
                   name="capacity"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Maximum Seating Capacity</FormLabel>
+                      <FormLabel className="text-xs uppercase font-bold text-ink">Maximum Seating Capacity</FormLabel>
                       <FormControl>
                         <Input
                           type="number"
                           min={1}
                           placeholder="e.g. 250"
                           disabled={isPending}
+                          className="border-2 border-ink font-mono text-xs"
                           {...field}
                         />
                       </FormControl>
@@ -162,8 +164,8 @@ export function VenuesManager({ venues }: VenuesManagerProps) {
                   >
                     Cancel
                   </Button>
-                  <Button type="submit" disabled={isPending}>
-                    {isPending ? "Creating..." : "Create Venue"}
+                  <Button type="submit" variant="yellow" disabled={isPending}>
+                    {isPending ? "CREATING..." : "CREATE VENUE"}
                   </Button>
                 </div>
               </form>
@@ -172,7 +174,7 @@ export function VenuesManager({ venues }: VenuesManagerProps) {
         </Dialog>
       </div>
 
-      <div className="rounded-md border bg-white shadow-xs">
+      <div className="border-2 border-ink rounded-[3px] bg-paper shadow-hard overflow-hidden">
         <Table>
           <TableHeader>
             <TableRow>
@@ -188,17 +190,17 @@ export function VenuesManager({ venues }: VenuesManagerProps) {
                 const eventCount = venue._count?.events ?? 0;
                 return (
                   <TableRow key={venue.id}>
-                    <TableCell className="font-medium text-slate-900">
+                    <TableCell className="font-mono text-xs font-semibold text-ink">
                       {venue.name}
                     </TableCell>
-                    <TableCell>{venue.capacity} seats</TableCell>
+                    <TableCell className="font-mono text-xs text-ink">{venue.capacity} seats</TableCell>
                     <TableCell>
                       {eventCount > 0 ? (
-                        <Badge variant="secondary">
+                        <Badge variant="outline" className="border border-ink bg-paper-cream font-mono text-[10px]">
                           {eventCount} event(s)
                         </Badge>
                       ) : (
-                        <span className="text-xs text-muted-foreground">
+                        <span className="text-xs font-mono text-muted-ink">
                           0 events
                         </span>
                       )}
@@ -206,12 +208,12 @@ export function VenuesManager({ venues }: VenuesManagerProps) {
                     <TableCell className="text-right">
                       <Button
                         size="sm"
-                        variant="ghost"
-                        className="text-red-600 hover:text-red-800 hover:bg-red-50"
+                        variant="outline"
+                        className="text-[#E8573A] border-ink text-xs h-7"
                         disabled={isPending}
                         onClick={() => handleDelete(venue.id, venue.name)}
                       >
-                        <Trash2 className="h-4 w-4 mr-1" /> Delete
+                        <Trash2 className="h-3.5 w-3.5 mr-1" /> Delete
                       </Button>
                     </TableCell>
                   </TableRow>
@@ -221,7 +223,7 @@ export function VenuesManager({ venues }: VenuesManagerProps) {
               <TableRow>
                 <TableCell
                   colSpan={4}
-                  className="h-24 text-center text-muted-foreground"
+                  className="h-24 text-center font-mono text-xs text-muted-ink"
                 >
                   No venues found. Click &quot;Add Venue&quot; to create one.
                 </TableCell>

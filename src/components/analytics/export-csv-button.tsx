@@ -30,9 +30,9 @@ export function ExportCsvButton({ data, filename }: ExportCsvButtonProps) {
       size="sm"
       onClick={handleExport}
       disabled={!data || data.length === 0}
-      className="h-8 text-xs bg-white"
+      className="h-8 text-xs bg-paper border-2 border-ink shadow-hard-sm font-mono uppercase tracking-wider"
     >
-      <Download className="h-3.5 w-3.5 mr-1.5 text-slate-600" />
+      <Download className="h-3.5 w-3.5 mr-1.5 text-ink" />
       Export CSV
     </Button>
   );

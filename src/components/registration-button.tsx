@@ -18,7 +18,7 @@ import {
   cancelRegistrationAction,
 } from "@/actions/registrations";
 import { toast } from "sonner";
-import { CheckCircle2, XCircle } from "lucide-react";
+import { CheckCircle2, XCircle, Ticket } from "lucide-react";
 
 interface RegistrationButtonProps {
   eventId: string;
@@ -63,8 +63,8 @@ export function RegistrationButton({
 
   if (hasStarted) {
     return (
-      <Button disabled variant="outline" className="w-full sm:w-auto">
-        Event Concluded / In Progress
+      <Button disabled variant="outline" className="w-full sm:w-auto font-mono-label opacity-70">
+        EVENT CONCLUDED
       </Button>
     );
   }
@@ -75,10 +75,10 @@ export function RegistrationButton({
         <Button
           disabled
           variant="secondary"
-          className="bg-emerald-50 text-emerald-800 border border-emerald-200 cursor-default font-medium"
+          className="bg-[#BFE5CF] text-ink border-2 border-ink cursor-default font-mono-label font-bold"
         >
-          <CheckCircle2 className="h-4 w-4 mr-1.5 text-emerald-600" />
-          Registered
+          <CheckCircle2 className="h-4 w-4 mr-1.5 text-[#19A860]" />
+          REGISTERED ✓
         </Button>
 
         <AlertDialog>
@@ -87,10 +87,10 @@ export function RegistrationButton({
               variant="outline"
               size="sm"
               disabled={isPending}
-              className="text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200"
+              className="text-[#F0508C] hover:bg-[#F0508C] hover:text-white font-mono-label"
             >
               <XCircle className="h-4 w-4 mr-1" />
-              Cancel Registration
+              Cancel Seat
             </Button>
           </AlertDialogTrigger>
           <AlertDialogContent>
@@ -105,7 +105,7 @@ export function RegistrationButton({
               <AlertDialogCancel>Keep my seat</AlertDialogCancel>
               <AlertDialogAction
                 onClick={handleCancel}
-                className="bg-destructive hover:bg-destructive/90 text-white"
+                className="bg-[#F0508C] hover:bg-[#F0508C]/90 text-white font-mono-label"
               >
                 {isPending ? "Cancelling..." : "Confirm Cancellation"}
               </AlertDialogAction>
@@ -118,8 +118,8 @@ export function RegistrationButton({
 
   if (isFull) {
     return (
-      <Button disabled variant="outline" className="w-full sm:w-auto text-slate-400">
-        Full (0 seats left)
+      <Button disabled variant="outline" className="w-full sm:w-auto font-mono-label text-muted-ink">
+        SOLD OUT (0 SEATS LEFT)
       </Button>
     );
   }
@@ -128,10 +128,10 @@ export function RegistrationButton({
     <Button
       onClick={handleRegister}
       disabled={isPending}
-      className="w-full sm:w-auto cursor-pointer"
+      className="w-full sm:w-auto font-mono-label font-bold tracking-wider"
     >
-      {isPending ? "Registering..." : `Register (${seatsLeft} seats left)`}
+      <Ticket className="h-4 w-4 mr-1.5 text-[#F6C945]" />
+      {isPending ? "BOOKING SEAT..." : `CONFIRM REGISTRATION (${seatsLeft} LEFT)`}
     </Button>
   );
 }
-

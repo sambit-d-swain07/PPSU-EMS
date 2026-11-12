@@ -57,15 +57,15 @@ export function ResetPasswordDialog({ user, onClose }: ResetPasswordDialogProps)
 
   return (
     <AlertDialog open={!!user} onOpenChange={(open) => !open && onClose()}>
-      <AlertDialogContent className="sm:max-w-md">
+      <AlertDialogContent className="sm:max-w-md border-2 border-ink bg-paper shadow-hard-lg font-mono">
         <AlertDialogHeader>
-          <div className="flex items-center gap-2 text-amber-600">
-            <KeyRound className="h-5 w-5" />
-            <AlertDialogTitle className="text-base font-bold text-slate-900">
-              Reset Password
+          <div className="flex items-center gap-2">
+            <KeyRound className="h-5 w-5 text-ink" />
+            <AlertDialogTitle className="font-pixel text-lg text-ink uppercase">
+              RESET PASSWORD
             </AlertDialogTitle>
           </div>
-          <AlertDialogDescription className="text-xs">
+          <AlertDialogDescription className="font-mono text-xs text-muted-ink">
             Set a new temporary password for <strong>{user?.name}</strong> ({user?.email}).
             The user will be required to change it upon their next sign-in.
           </AlertDialogDescription>
@@ -74,19 +74,19 @@ export function ResetPasswordDialog({ user, onClose }: ResetPasswordDialogProps)
         {user && (
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-3.5 py-2">
             <div className="space-y-1">
-              <Label htmlFor="reset-password" className="text-xs font-semibold text-slate-700">
+              <Label htmlFor="reset-password" className="text-xs font-bold uppercase text-ink">
                 New Temporary Password
               </Label>
               <Input
                 id="reset-password"
                 type="password"
                 placeholder="Minimum 8 characters"
-                className="h-8 text-xs"
+                className="h-8 text-xs font-mono border-2 border-ink"
                 {...register("password")}
                 disabled={isPending}
               />
               {errors.password && (
-                <p className="text-[11px] text-red-600">{errors.password.message}</p>
+                <p className="text-[11px] text-[#E8573A]">{errors.password.message}</p>
               )}
             </div>
 
@@ -94,8 +94,8 @@ export function ResetPasswordDialog({ user, onClose }: ResetPasswordDialogProps)
               <AlertDialogCancel onClick={onClose} disabled={isPending}>
                 Cancel
               </AlertDialogCancel>
-              <Button type="submit" size="sm" disabled={isPending}>
-                {isPending ? "Resetting..." : "Confirm Password Reset"}
+              <Button type="submit" variant="yellow" size="sm" disabled={isPending}>
+                {isPending ? "RESETTING..." : "CONFIRM RESET"}
               </Button>
             </AlertDialogFooter>
           </form>

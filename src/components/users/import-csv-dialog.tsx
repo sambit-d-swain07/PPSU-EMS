@@ -149,18 +149,18 @@ export function ImportCsvDialog() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" size="sm" className="h-9 text-xs bg-white">
-          <Upload className="h-3.5 w-3.5 mr-1.5 text-slate-600" /> Import CSV
+        <Button variant="outline" size="sm" className="h-9 text-xs font-mono border-2 border-ink bg-paper shadow-hard-sm">
+          <Upload className="h-3.5 w-3.5 mr-1.5 text-ink" /> IMPORT CSV
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-3xl max-h-[85vh] flex flex-col">
+      <DialogContent className="max-w-3xl max-h-[85vh] flex flex-col border-2 border-ink bg-paper shadow-hard-lg">
         <DialogHeader>
           <div className="flex items-center justify-between gap-3">
             <div>
-              <DialogTitle className="text-base font-bold text-slate-900">
-                Bulk Import University Accounts
+              <DialogTitle className="font-pixel text-lg text-ink uppercase">
+                BULK IMPORT ACCOUNTS
               </DialogTitle>
-              <DialogDescription className="text-xs">
+              <DialogDescription className="font-mono text-xs text-muted-ink">
                 Upload a CSV with name, email, password, role, and department columns.
               </DialogDescription>
             </div>
@@ -168,24 +168,24 @@ export function ImportCsvDialog() {
               variant="outline"
               size="sm"
               onClick={downloadSampleTemplate}
-              className="text-xs shrink-0"
+              className="text-xs font-mono shrink-0 border-ink"
             >
-              <Download className="h-3.5 w-3.5 mr-1 text-slate-500" /> Sample Template
+              <Download className="h-3.5 w-3.5 mr-1 text-ink" /> TEMPLATE
             </Button>
           </div>
         </DialogHeader>
 
-        <div className="space-y-4 py-2 flex-1 overflow-hidden flex flex-col">
+        <div className="space-y-4 py-2 flex-1 overflow-hidden flex flex-col font-mono">
           {rows.length === 0 ? (
-            <div className="border-2 border-dashed border-slate-200 rounded-xl p-8 text-center space-y-3 bg-slate-50/50">
-              <div className="h-10 w-10 rounded-full bg-slate-100 flex items-center justify-center mx-auto text-slate-500">
+            <div className="border-2 border-dashed border-ink rounded-[3px] p-8 text-center space-y-3 bg-paper-cream">
+              <div className="h-10 w-10 rounded-[3px] border border-ink bg-paper flex items-center justify-center mx-auto text-ink">
                 <FileText className="h-5 w-5" />
               </div>
               <div>
-                <p className="text-xs font-semibold text-slate-800">
+                <p className="text-xs font-bold text-ink uppercase tracking-wider">
                   Select a CSV file to validate and preview
                 </p>
-                <p className="text-[11px] text-slate-500">
+                <p className="text-[11px] text-muted-ink">
                   Required columns: name, email, password, role, department
                 </p>
               </div>
@@ -198,45 +198,45 @@ export function ImportCsvDialog() {
                 id="csv-file-input"
               />
               <Button
-                variant="default"
+                variant="yellow"
                 size="sm"
                 onClick={() => fileInputRef.current?.click()}
                 className="text-xs"
               >
-                <Upload className="h-3.5 w-3.5 mr-1.5" /> Choose CSV File
+                <Upload className="h-3.5 w-3.5 mr-1.5" /> CHOOSE CSV FILE
               </Button>
             </div>
           ) : (
             <div className="flex-1 flex flex-col overflow-hidden space-y-3">
               {/* Validation Summary Bar */}
-              <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg border border-slate-200 text-xs">
+              <div className="flex items-center justify-between p-3 bg-paper-cream rounded-[3px] border-2 border-ink shadow-hard-sm text-xs">
                 <div className="flex items-center gap-3">
-                  <span className="font-semibold text-slate-900 flex items-center gap-1.5">
-                    <FileText className="h-4 w-4 text-slate-500" />
+                  <span className="font-bold text-ink flex items-center gap-1.5">
+                    <FileText className="h-4 w-4 text-ink" />
                     {fileName}
                   </span>
-                  <Badge variant="outline" className="text-[11px]">
+                  <Badge variant="outline" className="text-[11px] font-mono border-ink bg-paper">
                     {rows.length} total rows
                   </Badge>
-                  <Badge variant="success" className="text-[11px] gap-1">
+                  <Badge variant="outline" className="text-[11px] font-mono border-ink bg-[#BFE5CF] text-ink gap-1">
                     <CheckCircle2 className="h-3 w-3" /> {validRows.length} valid
                   </Badge>
                   {errorCount > 0 && (
-                    <Badge variant="destructive" className="text-[11px] gap-1">
+                    <Badge variant="outline" className="text-[11px] font-mono border-ink bg-[#FDF2F4] text-[#E8573A] gap-1">
                       <AlertTriangle className="h-3 w-3" /> {errorCount} errors
                     </Badge>
                   )}
                 </div>
-                <Button variant="ghost" size="sm" onClick={handleReset} className="h-7 text-xs">
-                  Upload Different File
+                <Button variant="outline" size="sm" onClick={handleReset} className="h-7 text-xs font-mono">
+                  Change File
                 </Button>
               </div>
 
               {/* Table Preview */}
-              <div className="flex-1 overflow-y-auto border border-slate-200 rounded-md">
+              <div className="flex-1 overflow-y-auto border-2 border-ink rounded-[3px] bg-paper shadow-hard-sm">
                 <Table>
                   <TableHeader>
-                    <TableRow className="bg-slate-50/75">
+                    <TableRow>
                       <TableHead className="text-xs w-12 text-center">#</TableHead>
                       <TableHead className="text-xs">Name</TableHead>
                       <TableHead className="text-xs">Email</TableHead>
@@ -247,44 +247,36 @@ export function ImportCsvDialog() {
                   </TableHeader>
                   <TableBody>
                     {rows.map((row) => (
-                      <TableRow key={row.rowNumber} className={row.isValid ? "" : "bg-red-50/40"}>
-                        <TableCell className="text-xs text-center text-slate-400 font-mono">
+                      <TableRow key={row.rowNumber} className={row.isValid ? "" : "bg-[#FDF2F4]"}>
+                        <TableCell className="text-xs text-center text-muted-ink font-mono">
                           {row.rowNumber}
                         </TableCell>
-                        <TableCell className="text-xs font-medium text-slate-900">
+                        <TableCell className="text-xs font-semibold text-ink">
                           {row.name}
                         </TableCell>
-                        <TableCell className="text-xs text-slate-600 font-mono">
+                        <TableCell className="text-xs text-muted-ink font-mono">
                           {row.email}
                         </TableCell>
                         <TableCell className="text-xs">
                           <Badge
-                            variant={
-                              row.role === "ADMIN"
-                                ? "destructive"
-                                : row.role === "ORGANIZER"
-                                ? "warning"
-                                : row.role === "STUDENT"
-                                ? "secondary"
-                                : "outline"
-                            }
-                            className="text-[10px]"
+                            variant="outline"
+                            className="text-[10px] font-mono border-ink bg-paper"
                           >
                             {row.role}
                           </Badge>
                         </TableCell>
-                        <TableCell className="text-xs text-slate-600">
+                        <TableCell className="text-xs text-muted-ink">
                           {row.department}
                         </TableCell>
                         <TableCell className="text-xs">
                           {row.isValid ? (
-                            <span className="text-emerald-700 font-medium flex items-center gap-1 text-[11px]">
-                              <CheckCircle2 className="h-3 w-3 text-emerald-600" /> Ready
+                            <span className="text-[#19A860] font-bold flex items-center gap-1 text-[11px]">
+                              <CheckCircle2 className="h-3 w-3" /> Ready
                             </span>
                           ) : (
                             <div className="space-y-0.5">
                               {row.errors.map((err, i) => (
-                                <p key={i} className="text-[11px] text-red-600 flex items-center gap-1">
+                                <p key={i} className="text-[11px] text-[#E8573A] flex items-center gap-1">
                                   <AlertCircle className="h-3 w-3 shrink-0" />
                                   {err}
                                 </p>
@@ -313,11 +305,12 @@ export function ImportCsvDialog() {
           </Button>
           <Button
             type="button"
+            variant="yellow"
             size="sm"
             onClick={handleConfirmImport}
             disabled={isPending || validRows.length === 0}
           >
-            {isPending ? "Importing..." : `Confirm Import (${validRows.length} Users)`}
+            {isPending ? "IMPORTING..." : `CONFIRM IMPORT (${validRows.length} USERS)`}
           </Button>
         </DialogFooter>
       </DialogContent>

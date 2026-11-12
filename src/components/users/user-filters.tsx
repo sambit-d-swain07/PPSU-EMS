@@ -37,10 +37,10 @@ export function UserFilters() {
   const hasFilters = q !== "" || role !== "ALL";
 
   return (
-    <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-2xs space-y-3">
+    <div className="bg-paper p-4 rounded-[3px] border-2 border-ink shadow-hard space-y-3">
       <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 items-center">
         <div className="sm:col-span-8 relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-ink" />
           <Input
             placeholder="Search users by name or email..."
             value={q}
@@ -48,7 +48,7 @@ export function UserFilters() {
               setQ(e.target.value);
               setPage(1);
             }}
-            className="pl-9 pr-8 h-9 text-xs"
+            className="pl-9 pr-8 h-9 text-xs font-mono border-2 border-ink bg-paper shadow-hard-sm"
           />
           {q && (
             <button
@@ -56,7 +56,7 @@ export function UserFilters() {
                 setQ("");
                 setPage(1);
               }}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-ink hover:text-ink cursor-pointer"
             >
               <X className="h-3.5 w-3.5" />
             </button>
@@ -71,7 +71,7 @@ export function UserFilters() {
               setPage(1);
             }}
           >
-            <SelectTrigger className="h-9 text-xs bg-white">
+            <SelectTrigger className="h-9 text-xs bg-paper border-2 border-ink shadow-hard-sm font-mono uppercase tracking-wider">
               <SelectValue placeholder="All Roles" />
             </SelectTrigger>
             <SelectContent>
@@ -86,10 +86,10 @@ export function UserFilters() {
         <div className="sm:col-span-1 flex justify-end">
           {hasFilters && (
             <Button
-              variant="ghost"
+              variant="outline"
               size="sm"
               onClick={resetFilters}
-              className="h-9 text-xs text-slate-500 hover:text-slate-800"
+              className="h-9 text-xs font-mono"
             >
               Reset
             </Button>

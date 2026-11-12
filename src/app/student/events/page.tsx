@@ -8,6 +8,8 @@ import { Prisma } from "@prisma/client";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { PixelHeading } from "@/components/ui-theme/pixel-heading";
+import { Sticker } from "@/components/ui-theme/sticker";
 
 interface EventsPageProps {
   searchParams: Promise<{
@@ -86,7 +88,14 @@ export default async function StudentEventsPage({
     prisma.event.count({ where }),
     prisma.event.findMany({
       where,
-      include: {
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        category: true,
+        posterUrl: true,
+        startsAt: true,
+        capacity: true,
         venue: {
           select: { name: true },
         },
@@ -113,36 +122,35 @@ export default async function StudentEventsPage({
   };
 
   return (
-    <div className="min-h-screen bg-slate-50/50 flex flex-col">
+    <div className="min-h-screen flex flex-col">
       <StudentNav userName={session.user.name || "Student"} />
 
-      <main className="max-w-6xl w-full mx-auto px-4 sm:px-6 py-8 flex-1 space-y-6">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900">
-            Discover Campus Events
-          </h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            Browse upcoming workshops, cultural programs, hackathons, and
-            seminars.
-          </p>
-        </div>
+      <main className="max-w-6xl w-full mx-auto px-4 sm:px-6 py-8 flex-1 space-y-8">
+        {/* Title Header */}
+        <PixelHeading
+          title="UPCOMING EVENTS"
+          caption="✦ explore what's happening on campus ✦"
+          tagline="Pick a folder, reserve your seat, and get your digital QR ticket."
+        />
 
         <EventFilters />
 
         {events.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {events.map((event) => (
-              <EventCard key={event.id} event={event} />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-2">
+            {events.map((event, idx) => (
+              <EventCard key={event.id} event={event} index={idx} />
             ))}
           </div>
         ) : (
-          <div className="text-center py-16 bg-white rounded-xl border border-dashed border-slate-300 p-8">
-            <p className="text-base font-semibold text-slate-800">
-              No matching events found
+          <div className="text-center py-16 bg-white rounded-[3px] border-2 border-ink shadow-hard p-8 space-y-3">
+            <Sticker color="yellow" rotate={-2}>
+              EMPTY FOLDER
+            </Sticker>
+            <p className="font-hand text-2xl text-ink">
+              No matching events found in the files.
             </p>
-            <p className="text-xs text-muted-foreground mt-1 max-w-sm mx-auto">
-              There are currently no approved future events matching your
-              selected search criteria.
+            <p className="text-xs font-mono text-muted-ink max-w-sm mx-auto">
+              Try adjusting your search keywords or switching category filters.
             </p>
           </div>
         )}

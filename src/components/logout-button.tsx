@@ -10,15 +10,16 @@ export function LogoutButton() {
   return (
     <Button
       variant="outline"
+      size="sm"
       disabled={isPending}
       onClick={() => {
         startTransition(async () => {
           await logoutAction();
         });
       }}
+      className="h-8 px-3 text-[11px] font-mono-label hover:bg-[#F0508C] hover:text-white"
     >
-      {isPending ? "Logging out..." : "Log out"}
+      {isPending ? "EXITING..." : "LOG OUT"}
     </Button>
   );
 }
-

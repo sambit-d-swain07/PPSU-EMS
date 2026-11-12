@@ -19,8 +19,8 @@ export function DateRangeFilter() {
   return (
     <div className="flex items-center gap-2">
       <Select value={range || "all"} onValueChange={(val) => setRange(val === "all" ? null : val)}>
-        <SelectTrigger className="w-[160px] h-9 text-xs bg-white">
-          <Calendar className="h-3.5 w-3.5 mr-1.5 text-slate-500" />
+        <SelectTrigger className="w-[170px] h-9 text-xs bg-paper border-2 border-ink shadow-hard-sm font-mono uppercase tracking-wider">
+          <Calendar className="h-3.5 w-3.5 mr-1.5 text-muted-ink" />
           <SelectValue placeholder="Date range" />
         </SelectTrigger>
         <SelectContent>
