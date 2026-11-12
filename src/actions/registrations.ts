@@ -120,3 +120,4 @@ export async function cancelRegistrationAction(eventId: string) {
     return { error: "Failed to cancel registration." };
   }
 }
+

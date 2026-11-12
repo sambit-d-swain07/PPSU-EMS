@@ -134,3 +134,4 @@ export function RegistrationButton({
     </Button>
   );
 }
+

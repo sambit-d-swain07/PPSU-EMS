@@ -10,6 +10,8 @@ import {
 } from "@/lib/schemas";
 import { EventStatus } from "@prisma/client";
 import { revalidatePath } from "next/cache";
+import { findVenueClash } from "@/lib/venue-clash";
+import { format } from "date-fns";
 
 export async function createEventAction(
   data: EventFormInput,
@@ -39,6 +41,16 @@ export async function createEventAction(
     };
   }
 
+  const startsAt = new Date(parsed.data.startsAt);
+  const endsAt = new Date(parsed.data.endsAt);
+
+  const clash = await findVenueClash(parsed.data.venueId, startsAt, endsAt);
+  if (clash) {
+    return {
+      error: `Venue "${venue.name}" is already booked for "${clash.title}" from ${format(clash.startsAt, "MMM d, h:mm a")} to ${format(clash.endsAt, "h:mm a")}.`,
+    };
+  }
+
   const status: EventStatus = submitForApproval ? "PENDING" : "DRAFT";
 
   try {
@@ -48,8 +60,8 @@ export async function createEventAction(
         description: parsed.data.description,
         category: parsed.data.category,
         venueId: parsed.data.venueId,
-        startsAt: new Date(parsed.data.startsAt),
-        endsAt: new Date(parsed.data.endsAt),
+        startsAt,
+        endsAt,
         capacity: parsed.data.capacity,
         posterUrl: parsed.data.posterUrl || null,
         status,
@@ -112,6 +124,16 @@ export async function updateEventAction(
     };
   }
 
+  const startsAt = new Date(parsed.data.startsAt);
+  const endsAt = new Date(parsed.data.endsAt);
+
+  const clash = await findVenueClash(parsed.data.venueId, startsAt, endsAt, eventId);
+  if (clash) {
+    return {
+      error: `Venue "${venue.name}" is already booked for "${clash.title}" from ${format(clash.startsAt, "MMM d, h:mm a")} to ${format(clash.endsAt, "h:mm a")}.`,
+    };
+  }
+
   const status: EventStatus = submitForApproval ? "PENDING" : "DRAFT";
 
   try {
@@ -122,8 +144,8 @@ export async function updateEventAction(
         description: parsed.data.description,
         category: parsed.data.category,
         venueId: parsed.data.venueId,
-        startsAt: new Date(parsed.data.startsAt),
-        endsAt: new Date(parsed.data.endsAt),
+        startsAt,
+        endsAt,
         capacity: parsed.data.capacity,
         posterUrl: parsed.data.posterUrl || null,
         status,
@@ -160,6 +182,7 @@ export async function reviewEventAction(input: ReviewEventInput) {
 
   const event = await prisma.event.findUnique({
     where: { id: parsed.data.eventId },
+    include: { venue: true },
   });
 
   if (!event) {
@@ -168,6 +191,20 @@ export async function reviewEventAction(input: ReviewEventInput) {
 
   if (event.status !== "PENDING") {
     return { error: "Only pending events can be reviewed." };
+  }
+
+  if (parsed.data.action === "APPROVE") {
+    const clash = await findVenueClash(
+      event.venueId,
+      event.startsAt,
+      event.endsAt,
+      event.id
+    );
+    if (clash) {
+      return {
+        error: `Cannot approve: Venue "${event.venue.name}" is already booked for "${clash.title}" from ${format(clash.startsAt, "MMM d, h:mm a")} to ${format(clash.endsAt, "h:mm a")}.`,
+      };
+    }
   }
 
   const newStatus: EventStatus =

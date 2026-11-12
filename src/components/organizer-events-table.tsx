@@ -27,7 +27,7 @@ import {
 } from "@/components/ui/dialog";
 import { format } from "date-fns";
 import Link from "next/link";
-import { Edit, AlertCircle, PlusCircle, Users } from "lucide-react";
+import { Edit, AlertCircle, PlusCircle, Users, QrCode } from "lucide-react";
 
 export type EventItem = {
   id: string;
@@ -45,6 +45,7 @@ export type EventItem = {
   registrations?: {
     id: string;
     createdAt: Date | string;
+    attendedAt?: Date | string | null;
     user: {
       id: string;
       name: string;
@@ -163,18 +164,28 @@ export function OrganizerEventsTable({ data }: OrganizerEventsTableProps) {
           const isEditable =
             row.original.status === "DRAFT" || row.original.status === "REJECTED";
 
-          if (!isEditable) {
+          if (row.original.status === "APPROVED") {
             return (
-              <span className="text-xs text-slate-400 italic">Locked</span>
+              <Button size="sm" variant="default" className="text-xs h-8" asChild>
+                <Link href={`/organizer/events/${row.original.id}/attendance`}>
+                  <QrCode className="h-3.5 w-3.5 mr-1" /> Attendance
+                </Link>
+              </Button>
+            );
+          }
+
+          if (isEditable) {
+            return (
+              <Button size="sm" variant="outline" className="text-xs h-8" asChild>
+                <Link href={`/organizer/events/${row.original.id}/edit`}>
+                  <Edit className="h-3.5 w-3.5 mr-1" /> Edit
+                </Link>
+              </Button>
             );
           }
 
           return (
-            <Button size="sm" variant="outline" asChild>
-              <Link href={`/organizer/events/${row.original.id}/edit`}>
-                <Edit className="h-3.5 w-3.5 mr-1" /> Edit
-              </Link>
-            </Button>
+            <span className="text-xs text-slate-400 italic">Locked</span>
           );
         },
       },

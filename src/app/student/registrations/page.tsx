@@ -6,9 +6,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { TicketDialog } from "@/components/ticket-dialog";
 import Link from "next/link";
 import { format } from "date-fns";
-import { Calendar, MapPin, ArrowRight, Ticket } from "lucide-react";
+import { Calendar, MapPin, ArrowRight, Ticket, CheckCircle2 } from "lucide-react";
 
 export default async function MyRegistrationsPage() {
   const session = await auth();
@@ -42,9 +43,11 @@ export default async function MyRegistrationsPage() {
     (reg) => new Date(reg.event.startsAt).getTime() <= now.getTime()
   );
 
+  const studentName = session.user.name || "Student";
+
   return (
     <div className="min-h-screen bg-slate-50/50 flex flex-col">
-      <StudentNav userName={session.user.name || "Student"} />
+      <StudentNav userName={studentName} />
 
       <main className="max-w-5xl w-full mx-auto px-4 sm:px-6 py-8 flex-1 space-y-6">
         <div>
@@ -52,7 +55,7 @@ export default async function MyRegistrationsPage() {
             My Event Registrations
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
-            View your confirmed event bookings and registration history.
+            View your confirmed event bookings, digital passes, and attendance history.
           </p>
         </div>
 
@@ -71,7 +74,12 @@ export default async function MyRegistrationsPage() {
             {upcoming.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {upcoming.map((reg) => (
-                  <RegistrationCard key={reg.id} reg={reg} isPast={false} />
+                  <RegistrationCard
+                    key={reg.id}
+                    reg={reg}
+                    isPast={false}
+                    studentName={studentName}
+                  />
                 ))}
               </div>
             ) : (
@@ -96,7 +104,12 @@ export default async function MyRegistrationsPage() {
             {past.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {past.map((reg) => (
-                  <RegistrationCard key={reg.id} reg={reg} isPast={true} />
+                  <RegistrationCard
+                    key={reg.id}
+                    reg={reg}
+                    isPast={true}
+                    studentName={studentName}
+                  />
                 ))}
               </div>
             ) : (
@@ -119,10 +132,12 @@ export default async function MyRegistrationsPage() {
 function RegistrationCard({
   reg,
   isPast,
+  studentName,
 }: {
   reg: {
     id: string;
     createdAt: Date;
+    attendedAt: Date | null;
     event: {
       id: string;
       title: string;
@@ -132,14 +147,28 @@ function RegistrationCard({
     };
   };
   isPast: boolean;
+  studentName: string;
 }) {
   return (
     <Card className="bg-white border-slate-200 overflow-hidden shadow-2xs hover:shadow-xs transition-shadow flex flex-col justify-between">
       <CardContent className="p-5 space-y-4">
         <div className="flex items-start justify-between gap-3">
-          <Badge variant={isPast ? "outline" : "secondary"}>
-            {reg.event.category}
-          </Badge>
+          <div className="flex items-center gap-2">
+            <Badge variant={isPast ? "outline" : "secondary"}>
+              {reg.event.category}
+            </Badge>
+            {isPast && (
+              reg.attendedAt ? (
+                <Badge variant="success" className="gap-1">
+                  <CheckCircle2 className="h-3 w-3" /> Attended
+                </Badge>
+              ) : (
+                <Badge variant="outline" className="text-slate-400 border-slate-300">
+                  Not Attended
+                </Badge>
+              )
+            )}
+          </div>
           <span className="text-[11px] text-muted-foreground">
             Booked {format(new Date(reg.createdAt), "MMM d, yyyy")}
           </span>
@@ -155,10 +184,7 @@ function RegistrationCard({
           <div className="flex items-center gap-2">
             <Calendar className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
             <span>
-              {format(
-                new Date(reg.event.startsAt),
-                "EEE, MMM d, yyyy • h:mm a"
-              )}
+              {format(new Date(reg.event.startsAt), "EEE, MMM d, yyyy • h:mm a")}
             </span>
           </div>
           <div className="flex items-center gap-2">
@@ -167,10 +193,18 @@ function RegistrationCard({
           </div>
         </div>
 
-        <div className="pt-2 flex justify-end">
+        <div className="pt-2 flex items-center justify-between gap-2">
+          <TicketDialog
+            registrationId={reg.id}
+            eventTitle={reg.event.title}
+            startsAt={reg.event.startsAt}
+            venueName={reg.event.venue.name}
+            studentName={studentName}
+            attendedAt={reg.attendedAt}
+          />
           <Button size="sm" variant="ghost" asChild className="text-xs">
             <Link href={`/student/events/${reg.event.id}`}>
-              View details <ArrowRight className="h-3.5 w-3.5 ml-1" />
+              Details <ArrowRight className="h-3.5 w-3.5 ml-1" />
             </Link>
           </Button>
         </div>
