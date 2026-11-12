@@ -33,13 +33,18 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
 
-  --font-pixel: var(--font-pixel), monospace;
-  --font-hand: var(--font-hand), cursive;
-  --font-sans: var(--font-sans), sans-serif;
-  --font-mono: var(--font-mono), monospace;
+  --font-pixel: var(--font-pixel);
+  --font-hand: var(--font-hand);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
 }
 
 :root {
+  --font-pixel: "Pixelify Sans", ui-monospace, monospace;
+  --font-hand: "Caveat", cursive;
+  --font-sans: "Inter Variable", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono Variable", ui-monospace, monospace;
+
   --background: #F7F6F2;
   --foreground: #111111;
   --card: #FFFFFF;
