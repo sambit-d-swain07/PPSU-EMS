@@ -19,6 +19,19 @@ export default async function OrganizerPage() {
           capacity: true,
         },
       },
+      registrations: {
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              department: true,
+            },
+          },
+        },
+        orderBy: { createdAt: "desc" },
+      },
     },
     orderBy: { createdAt: "desc" },
   });

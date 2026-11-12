@@ -27,7 +27,7 @@ import {
 } from "@/components/ui/dialog";
 import { format } from "date-fns";
 import Link from "next/link";
-import { Edit, AlertCircle, PlusCircle } from "lucide-react";
+import { Edit, AlertCircle, PlusCircle, Users } from "lucide-react";
 
 export type EventItem = {
   id: string;
@@ -42,6 +42,16 @@ export type EventItem = {
     name: string;
     capacity: number;
   };
+  registrations?: {
+    id: string;
+    createdAt: Date | string;
+    user: {
+      id: string;
+      name: string;
+      email: string;
+      department?: string | null;
+    };
+  }[];
 };
 
 interface OrganizerEventsTableProps {
@@ -49,7 +59,10 @@ interface OrganizerEventsTableProps {
 }
 
 export function OrganizerEventsTable({ data }: OrganizerEventsTableProps) {
-  const [remarkDialogEvent, setRemarkDialogEvent] = React.useState<EventItem | null>(null);
+  const [remarkDialogEvent, setRemarkDialogEvent] =
+    React.useState<EventItem | null>(null);
+  const [registrationsDialogEvent, setRegistrationsDialogEvent] =
+    React.useState<EventItem | null>(null);
 
   const columns = React.useMemo<ColumnDef<EventItem>[]>(
     () => [
@@ -126,6 +139,24 @@ export function OrganizerEventsTable({ data }: OrganizerEventsTableProps) {
         },
       },
       {
+        id: "registrations",
+        header: "Registrations",
+        cell: ({ row }) => {
+          const regCount = row.original.registrations?.length || 0;
+          return (
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => setRegistrationsDialogEvent(row.original)}
+              className="text-xs h-8"
+            >
+              <Users className="h-3.5 w-3.5 mr-1 text-slate-500" />
+              {regCount} / {row.original.capacity}
+            </Button>
+          );
+        },
+      },
+      {
         id: "actions",
         header: "Actions",
         cell: ({ row }) => {
@@ -171,7 +202,8 @@ export function OrganizerEventsTable({ data }: OrganizerEventsTableProps) {
             My Events
           </h2>
           <p className="text-xs text-muted-foreground">
-            Manage your created events, track approvals, and edit drafts.
+            Manage your created events, track approvals, and view student
+            registrations.
           </p>
         </div>
         <Button size="sm" asChild>
@@ -248,6 +280,7 @@ export function OrganizerEventsTable({ data }: OrganizerEventsTableProps) {
         </div>
       )}
 
+      {/* Rejection Remark Dialog */}
       {remarkDialogEvent && (
         <Dialog
           open={!!remarkDialogEvent}
@@ -282,7 +315,84 @@ export function OrganizerEventsTable({ data }: OrganizerEventsTableProps) {
           </DialogContent>
         </Dialog>
       )}
+
+      {/* Registrations Dialog */}
+      {registrationsDialogEvent && (
+        <Dialog
+          open={!!registrationsDialogEvent}
+          onOpenChange={(open) => {
+            if (!open) setRegistrationsDialogEvent(null);
+          }}
+        >
+          <DialogContent className="max-w-2xl max-h-[80vh] flex flex-col">
+            <DialogHeader>
+              <DialogTitle className="flex items-center justify-between">
+                <span>Registered Students</span>
+                <Badge variant="outline">
+                  {registrationsDialogEvent.registrations?.length || 0} /{" "}
+                  {registrationsDialogEvent.capacity} Filled
+                </Badge>
+              </DialogTitle>
+              <DialogDescription>
+                Confirmed attendee list for &quot;
+                {registrationsDialogEvent.title}&quot;
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="overflow-y-auto flex-1 my-2 border rounded-md">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Student Name</TableHead>
+                    <TableHead>Email</TableHead>
+                    <TableHead>Department</TableHead>
+                    <TableHead>Registered At</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {registrationsDialogEvent.registrations?.length ? (
+                    registrationsDialogEvent.registrations.map((reg) => (
+                      <TableRow key={reg.id}>
+                        <TableCell className="font-medium text-slate-900">
+                          {reg.user.name}
+                        </TableCell>
+                        <TableCell className="text-slate-600 text-xs">
+                          {reg.user.email}
+                        </TableCell>
+                        <TableCell className="text-slate-600 text-xs">
+                          {reg.user.department || "General"}
+                        </TableCell>
+                        <TableCell className="text-slate-500 text-xs">
+                          {format(new Date(reg.createdAt), "MMM d, h:mm a")}
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  ) : (
+                    <TableRow>
+                      <TableCell
+                        colSpan={4}
+                        className="h-24 text-center text-muted-foreground text-sm"
+                      >
+                        No students have registered for this event yet.
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </div>
+
+            <div className="flex justify-end pt-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setRegistrationsDialogEvent(null)}
+              >
+                Close
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 }
-
