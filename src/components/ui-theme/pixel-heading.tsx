@@ -47,7 +47,7 @@ export function PixelHeading({
             </svg>
             <h1
               className={cn(
-                "font-pixel text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight text-[#111111] uppercase",
+                "font-pixel text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-[#111111] uppercase break-words",
                 titleClassName
               )}
             >
@@ -57,7 +57,7 @@ export function PixelHeading({
         ) : (
           <h1
             className={cn(
-              "font-pixel text-3xl sm:text-5xl md:text-6xl font-bold tracking-tight text-[#111111] uppercase",
+              "font-pixel text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-[#111111] uppercase break-words",
               titleClassName
             )}
           >

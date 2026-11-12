@@ -59,7 +59,7 @@ export function StatCard({
       </div>
 
       <div className="py-2">
-        <div className="font-pixel text-3xl sm:text-4xl font-bold tracking-tight text-ink">
+        <div className="font-pixel text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-ink truncate">
           {value}
         </div>
       </div>

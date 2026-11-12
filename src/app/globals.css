@@ -67,8 +67,11 @@
   --radius: 3px;
 }
 
-/* Notebook paper background */
+/* Notebook paper background & mobile overflow prevention */
+html,
 body {
+  max-width: 100%;
+  overflow-x: hidden;
   background-color: #F7F6F2;
   background-image: repeating-linear-gradient(
     to bottom,

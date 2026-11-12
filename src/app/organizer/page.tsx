@@ -126,20 +126,20 @@ export default async function OrganizerPage({ searchParams }: OrganizerPageProps
         {/* Separated Sections via Tabs */}
         <Tabs defaultValue="events" className="space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b-2 border-ink pb-3">
-            <TabsList className="bg-paper p-1 border-2 border-ink rounded-[3px] shadow-hard-sm">
+            <TabsList className="bg-paper p-1 border-2 border-ink rounded-[3px] shadow-hard-sm w-full sm:w-auto grid grid-cols-2 sm:flex">
               <TabsTrigger
                 value="events"
-                className="gap-2 font-mono-label text-xs px-4 py-1.5 data-[state=active]:bg-[#F6C945] data-[state=active]:text-ink data-[state=active]:shadow-hard-sm"
+                className="gap-2 font-mono-label text-xs px-3 sm:px-4 py-1.5 data-[state=active]:bg-[#F6C945] data-[state=active]:text-ink data-[state=active]:shadow-hard-sm justify-center"
               >
-                <Calendar className="h-3.5 w-3.5" />
-                <span>My Events ({events.length})</span>
+                <Calendar className="h-3.5 w-3.5 shrink-0" />
+                <span className="truncate">My Events ({events.length})</span>
               </TabsTrigger>
               <TabsTrigger
                 value="analytics"
-                className="gap-2 font-mono-label text-xs px-4 py-1.5 data-[state=active]:bg-[#F6C945] data-[state=active]:text-ink data-[state=active]:shadow-hard-sm"
+                className="gap-2 font-mono-label text-xs px-3 sm:px-4 py-1.5 data-[state=active]:bg-[#F6C945] data-[state=active]:text-ink data-[state=active]:shadow-hard-sm justify-center"
               >
-                <BarChart3 className="h-3.5 w-3.5" />
-                <span>Analytics & Progress</span>
+                <BarChart3 className="h-3.5 w-3.5 shrink-0" />
+                <span className="truncate">Analytics & Progress</span>
               </TabsTrigger>
             </TabsList>
 

@@ -172,7 +172,7 @@ export default async function EventDetailPage({
 
                 {/* Registration Action Box */}
                 <div className="p-4 bg-white border-2 border-ink rounded-[3px] shadow-hard-sm space-y-3">
-                  <div className="flex items-center justify-between text-xs">
+                  <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
                     <span className="font-mono-label text-ink">REGISTRATION STATUS</span>
                     <span className="font-hand text-sm text-ink">
                       {isRegistered ? "Ticket confirmed" : isFull ? "Sold out" : "Open for booking"}

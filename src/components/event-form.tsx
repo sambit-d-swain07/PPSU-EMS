@@ -367,7 +367,7 @@ export function EventForm({ venues, eventId, initialData }: EventFormProps) {
             )}
           />
 
-          <div className="flex items-center gap-3 pt-4 border-t-2 border-ink">
+          <div className="flex flex-wrap items-center gap-3 pt-4 border-t-2 border-ink">
             <Button
               type="button"
               variant="outline"

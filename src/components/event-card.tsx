@@ -106,7 +106,7 @@ export function EventCard({ event, index = 0 }: EventCardProps) {
 
         {/* Footer / Meta Row */}
         <div
-          className={`pt-3 border-t flex items-center justify-between text-xs px-1 ${
+          className={`pt-3 border-t flex flex-wrap items-center justify-between gap-2 text-xs px-1 ${
             isInk ? "border-white/20" : "border-ink/20"
           }`}
         >

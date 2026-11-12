@@ -204,8 +204,8 @@ export function UsersTable({
 
   return (
     <div className="space-y-4">
-      <div className="border-2 border-ink rounded-[3px] bg-paper shadow-hard overflow-hidden">
-        <Table>
+      <div className="border-2 border-ink rounded-[3px] bg-paper shadow-hard overflow-x-auto">
+        <Table className="min-w-[700px]">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
@@ -246,7 +246,7 @@ export function UsersTable({
 
       {/* Pagination Controls */}
       {totalPages > 1 && (
-        <div className="flex items-center justify-between px-2 font-mono text-xs text-muted-ink">
+        <div className="flex flex-wrap items-center justify-between gap-3 px-2 font-mono text-xs text-muted-ink">
           <div>
             Showing {(currentPage - 1) * pageSize + 1} to{" "}
             {Math.min(currentPage * pageSize, totalCount)} of {totalCount} users

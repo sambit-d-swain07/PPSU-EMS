@@ -203,7 +203,7 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
             </div>
           </div>
           <div className="overflow-x-auto">
-            <Table>
+            <Table className="min-w-[500px]">
               <TableHeader>
                 <TableRow>
                   <TableHead className="text-xs">Rank & Name</TableHead>
@@ -257,17 +257,17 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
                   review pending proposals and configure campus event venues
                 </p>
               </div>
-              <TabsList className="w-full sm:w-auto">
-                <TabsTrigger value="approvals" className="text-xs sm:text-sm flex items-center gap-1.5 flex-1 sm:flex-initial">
-                  Pending Approvals
+              <TabsList className="w-full sm:w-auto grid grid-cols-2 sm:flex">
+                <TabsTrigger value="approvals" className="text-xs sm:text-sm flex items-center justify-center gap-1.5 flex-1 sm:flex-initial">
+                  <span className="truncate">Pending Approvals</span>
                   {pendingEvents.length > 0 && (
-                    <Badge variant="outline" className="ml-1 text-[10px] px-1.5 py-0 h-4 bg-[#F0508C] text-white border-none font-bold">
+                    <Badge variant="outline" className="ml-1 text-[10px] px-1.5 py-0 h-4 bg-[#F0508C] text-white border-none font-bold shrink-0">
                       {pendingEvents.length}
                     </Badge>
                   )}
                 </TabsTrigger>
-                <TabsTrigger value="venues" className="text-xs sm:text-sm flex-1 sm:flex-initial">
-                  Manage Venues ({venues.length})
+                <TabsTrigger value="venues" className="text-xs sm:text-sm flex-1 sm:flex-initial justify-center">
+                  <span className="truncate">Venues ({venues.length})</span>
                 </TabsTrigger>
               </TabsList>
             </div>

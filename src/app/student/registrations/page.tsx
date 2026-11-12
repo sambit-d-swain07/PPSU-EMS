@@ -69,7 +69,7 @@ export default async function MyRegistrationsPage() {
         />
 
         <Tabs defaultValue="upcoming" className="space-y-6">
-          <TabsList className="p-1">
+          <TabsList className="p-1 w-full sm:w-auto flex">
             <TabsTrigger value="upcoming">
               Upcoming Passes ({upcoming.length})
             </TabsTrigger>

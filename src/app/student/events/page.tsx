@@ -156,7 +156,7 @@ export default async function StudentEventsPage({
         )}
 
         {totalPages > 1 && (
-          <div className="flex items-center justify-between pt-4 border-t border-slate-200">
+          <div className="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-slate-200">
             <span className="text-xs text-muted-foreground">
               Showing {(pageNumber - 1) * pageSize + 1}–
               {Math.min(pageNumber * pageSize, totalCount)} of {totalCount} events

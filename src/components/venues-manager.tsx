@@ -190,8 +190,8 @@ export function VenuesManager({ venues }: VenuesManagerProps) {
         </Dialog>
       </div>
 
-      <div className="border-2 border-ink rounded-[3px] bg-paper shadow-hard overflow-hidden">
-        <Table>
+      <div className="border-2 border-ink rounded-[3px] bg-paper shadow-hard overflow-x-auto">
+        <Table className="min-w-[500px]">
           <TableHeader>
             <TableRow>
               <TableHead>Venue Name</TableHead>

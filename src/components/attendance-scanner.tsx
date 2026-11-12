@@ -211,7 +211,8 @@ export function AttendanceScanner({
           tabTitle="EVENT CHECK-IN"
           tabPosition="left"
           color="paper"
-          className="md:col-span-2 p-5"
+          className="md:col-span-2"
+          contentClassName="p-4 sm:p-5"
         >
           <div className="space-y-2">
             <div className="flex items-center gap-2 mb-1">
@@ -393,7 +394,7 @@ export function AttendanceScanner({
             </div>
 
             <div className="p-0 flex-1 overflow-x-auto">
-              <Table>
+              <Table className="min-w-[480px]">
                 <TableHeader>
                   <TableRow className="bg-paper-cream hover:bg-paper-cream">
                     <TableHead className="w-12 text-center">Status</TableHead>

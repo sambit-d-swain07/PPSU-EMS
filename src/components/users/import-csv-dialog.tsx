@@ -155,7 +155,7 @@ export function ImportCsvDialog() {
       </DialogTrigger>
       <DialogContent className="max-w-3xl max-h-[85vh] flex flex-col border-2 border-ink bg-paper shadow-hard-lg">
         <DialogHeader>
-          <div className="flex items-center justify-between gap-3">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
               <DialogTitle className="font-pixel text-lg text-ink uppercase">
                 BULK IMPORT ACCOUNTS
@@ -168,7 +168,7 @@ export function ImportCsvDialog() {
               variant="outline"
               size="sm"
               onClick={downloadSampleTemplate}
-              className="text-xs font-mono shrink-0 border-ink"
+              className="text-xs font-mono shrink-0 border-ink self-start sm:self-auto"
             >
               <Download className="h-3.5 w-3.5 mr-1 text-ink" /> TEMPLATE
             </Button>
@@ -209,8 +209,8 @@ export function ImportCsvDialog() {
           ) : (
             <div className="flex-1 flex flex-col overflow-hidden space-y-3">
               {/* Validation Summary Bar */}
-              <div className="flex items-center justify-between p-3 bg-paper-cream rounded-[3px] border-2 border-ink shadow-hard-sm text-xs">
-                <div className="flex items-center gap-3">
+              <div className="flex flex-wrap items-center justify-between gap-2 p-3 bg-paper-cream rounded-[3px] border-2 border-ink shadow-hard-sm text-xs">
+                <div className="flex flex-wrap items-center gap-2">
                   <span className="font-bold text-ink flex items-center gap-1.5">
                     <FileText className="h-4 w-4 text-ink" />
                     {fileName}
@@ -233,8 +233,8 @@ export function ImportCsvDialog() {
               </div>
 
               {/* Table Preview */}
-              <div className="flex-1 overflow-y-auto border-2 border-ink rounded-[3px] bg-paper shadow-hard-sm">
-                <Table>
+              <div className="flex-1 overflow-auto border-2 border-ink rounded-[3px] bg-paper shadow-hard-sm">
+                <Table className="min-w-[600px]">
                   <TableHeader>
                     <TableRow>
                       <TableHead className="text-xs w-12 text-center">#</TableHead>

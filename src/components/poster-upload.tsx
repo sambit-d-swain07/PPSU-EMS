@@ -85,9 +85,9 @@ export function PosterUpload({ value, onChange, disabled }: PosterUploadProps) {
   // Preview state if image exists
   if (value) {
     return (
-      <div className="relative inline-block pt-3 pb-2 px-2.5 bg-white border-2 border-ink rounded-[3px] shadow-hard -rotate-1 max-w-sm">
+      <div className="relative inline-block pt-3 pb-2 px-2.5 bg-white border-2 border-ink rounded-[3px] shadow-hard -rotate-1 w-full max-w-[280px] sm:max-w-sm">
         <Tape color="blue" rotation="-rotate-2" className="-top-3 left-1/2 -translate-x-1/2" />
-        <div className="relative w-72 sm:w-80 h-44 border border-ink/40 overflow-hidden bg-black/5">
+        <div className="relative w-full h-40 sm:h-44 border border-ink/40 overflow-hidden bg-black/5">
           <Image
             src={value}
             alt="Event poster"

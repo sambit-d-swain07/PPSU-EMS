@@ -253,8 +253,8 @@ export function PendingApprovalsTable({ data }: PendingApprovalsTableProps) {
         </p>
       </div>
 
-      <div className="border-2 border-ink rounded-[3px] bg-paper shadow-hard overflow-hidden">
-        <Table>
+      <div className="border-2 border-ink rounded-[3px] bg-paper shadow-hard overflow-x-auto">
+        <Table className="min-w-[700px]">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
