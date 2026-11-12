@@ -27,7 +27,7 @@ import {
 } from "@/components/ui/dialog";
 import { format } from "date-fns";
 import Link from "next/link";
-import { Edit, AlertCircle, PlusCircle, Users, QrCode, Star, MessageSquare } from "lucide-react";
+import { Edit, AlertCircle, PlusCircle, Users, QrCode, Star, MessageSquare, BarChart3 } from "lucide-react";
 
 export type EventItem = {
   id: string;
@@ -179,6 +179,11 @@ export function OrganizerEventsTable({ data }: OrganizerEventsTableProps) {
                 <Button size="sm" variant="default" className="text-xs h-8" asChild>
                   <Link href={`/organizer/events/${row.original.id}/attendance`}>
                     <QrCode className="h-3.5 w-3.5 mr-1" /> Attendance
+                  </Link>
+                </Button>
+                <Button size="sm" variant="outline" className="text-xs h-8" asChild>
+                  <Link href={`/organizer/events/${row.original.id}/analytics`}>
+                    <BarChart3 className="h-3.5 w-3.5 mr-1 text-indigo-600" /> Analytics
                   </Link>
                 </Button>
                 {isEnded && (

@@ -78,7 +78,7 @@ export async function createEventAction(
     if (submitForApproval) {
       after(async () => {
         const reviewers = await prisma.user.findMany({
-          where: { role: { in: ["FACULTY", "ADMIN"] }, isActive: true },
+          where: { role: "ADMIN", isActive: true },
           select: { email: true },
         });
 
@@ -93,7 +93,7 @@ export async function createEventAction(
               category: event.category,
               venueName: venue.name,
               startsAt: event.startsAt,
-              approvalUrl: `${env.APP_URL}/faculty`,
+              approvalUrl: `${env.APP_URL}/admin`,
             }),
           });
         }
@@ -101,7 +101,6 @@ export async function createEventAction(
     }
 
     revalidatePath("/organizer");
-    revalidatePath("/faculty");
     revalidatePath("/admin");
     return { success: true, eventId: event.id };
   } catch (error) {
@@ -187,7 +186,7 @@ export async function updateEventAction(
     if (submitForApproval) {
       after(async () => {
         const reviewers = await prisma.user.findMany({
-          where: { role: { in: ["FACULTY", "ADMIN"] }, isActive: true },
+          where: { role: "ADMIN", isActive: true },
           select: { email: true },
         });
 
@@ -202,7 +201,7 @@ export async function updateEventAction(
               category: updated.category,
               venueName: venue.name,
               startsAt: updated.startsAt,
-              approvalUrl: `${env.APP_URL}/faculty`,
+              approvalUrl: `${env.APP_URL}/admin`,
             }),
           });
         }
@@ -211,7 +210,6 @@ export async function updateEventAction(
 
     revalidatePath("/organizer");
     revalidatePath(`/organizer/events/${eventId}/edit`);
-    revalidatePath("/faculty");
     revalidatePath("/admin");
     return { success: true };
   } catch (error) {
@@ -224,10 +222,10 @@ export async function reviewEventAction(input: ReviewEventInput) {
   const session = await auth();
   if (
     !session?.user ||
-    (session.user.role !== "FACULTY" && session.user.role !== "ADMIN")
+    session.user.role !== "ADMIN"
   ) {
     return {
-      error: "Unauthorized. Only faculty and admins can review events.",
+      error: "Unauthorized. Only admins can review events.",
     };
   }
 
@@ -294,7 +292,6 @@ export async function reviewEventAction(input: ReviewEventInput) {
       });
     });
 
-    revalidatePath("/faculty");
     revalidatePath("/admin");
     revalidatePath("/organizer");
     return { success: true };

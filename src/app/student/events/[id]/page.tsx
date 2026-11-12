@@ -207,7 +207,7 @@ export default async function EventDetailPage({
                 <strong className="text-slate-700">
                   {event.organizer.name}
                 </strong>{" "}
-                ({event.organizer.department || "Faculty of Student Affairs"})
+                ({event.organizer.department || "Student Affairs"})
               </span>
             </div>
           </div>

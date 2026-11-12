@@ -67,3 +67,4 @@ export async function submitFeedbackAction(
     return { error: "Failed to submit feedback. You may have already reviewed this event." };
   }
 }
+

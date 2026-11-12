@@ -196,7 +196,7 @@ export function Certificate({
 
               <View style={styles.signatureBlock}>
                 <View style={styles.signatureLine} />
-                <Text style={styles.signatoryName}>Dean / Faculty Coordinator</Text>
+                <Text style={styles.signatoryName}>Dean / Campus Director</Text>
                 <Text style={styles.signatoryTitle}>Student Affairs & Events</Text>
               </View>
             </View>
@@ -213,3 +213,4 @@ export function Certificate({
     </Document>
   );
 }
+

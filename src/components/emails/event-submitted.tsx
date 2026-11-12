@@ -28,7 +28,7 @@ export function EventSubmittedEmail({
   return (
     <EmailLayout previewText={`New event pending review: ${eventTitle}`}>
       <Heading style={heading}>New Event Submitted for Review 📋</Heading>
-      <Text style={paragraph}>Hello Faculty & Administration,</Text>
+      <Text style={paragraph}>Hello Administrator,</Text>
       <Text style={paragraph}>
         A new campus event proposal has been submitted and is currently awaiting
         your review and approval:

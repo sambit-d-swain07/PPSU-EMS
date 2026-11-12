@@ -4,7 +4,6 @@ import { redirect } from "next/navigation";
 const ROLE_DASHBOARDS: Record<string, string> = {
   ADMIN: "/admin",
   ORGANIZER: "/organizer",
-  FACULTY: "/faculty",
   STUDENT: "/student",
 };
 

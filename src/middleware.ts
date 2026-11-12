@@ -7,11 +7,10 @@ const { auth } = NextAuth(authConfig);
 const ROLE_DASHBOARDS: Record<string, string> = {
   ADMIN: "/admin",
   ORGANIZER: "/organizer",
-  FACULTY: "/faculty",
   STUDENT: "/student",
 };
 
-const ROLE_PATHS = ["/admin", "/organizer", "/faculty", "/student"];
+const ROLE_PATHS = ["/admin", "/organizer", "/student"];
 
 export default auth((req) => {
   const { nextUrl } = req;
