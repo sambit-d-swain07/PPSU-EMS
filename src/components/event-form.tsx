@@ -229,20 +229,32 @@ export function EventForm({ venues, eventId, initialData }: EventFormProps) {
                   <FormLabel>Venue</FormLabel>
                   <Select
                     onValueChange={field.onChange}
-                    defaultValue={field.value}
-                    disabled={isPending}
+                    value={field.value || undefined}
+                    disabled={isPending || venues.length === 0}
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select a venue" />
+                        <SelectValue
+                          placeholder={
+                            venues.length === 0
+                              ? "No venues available"
+                              : "Select a venue"
+                          }
+                        />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {venues.map((venue) => (
-                        <SelectItem key={venue.id} value={venue.id}>
-                          {venue.name} (Max {venue.capacity})
-                        </SelectItem>
-                      ))}
+                      {venues.length > 0 ? (
+                        venues.map((venue) => (
+                          <SelectItem key={venue.id} value={venue.id}>
+                            {venue.name} (Max {venue.capacity})
+                          </SelectItem>
+                        ))
+                      ) : (
+                        <div className="p-2 text-xs text-muted-foreground text-center">
+                          No venues found
+                        </div>
+                      )}
                     </SelectContent>
                   </Select>
                   <FormMessage />
