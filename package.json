@@ -9,7 +9,8 @@
     "lint": "eslint",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
-    "db:seed": "prisma db seed"
+    "db:seed": "prisma db seed",
+    "email:dev": "npx email dev --dir src/components/emails"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
@@ -25,6 +26,8 @@
     "@radix-ui/react-select": "^2.4.1",
     "@radix-ui/react-slot": "^1.1.2",
     "@radix-ui/react-tabs": "^1.2.1",
+    "@react-email/components": "^1.0.12",
+    "@react-email/render": "^2.3.1",
     "@supabase/ssr": "^0.12.7",
     "@supabase/supabase-js": "^2.119.0",
     "@t3-oss/env-nextjs": "^0.12.0",
@@ -39,6 +42,7 @@
     "next": "^15.2.1",
     "next-auth": "5.0.0-beta.25",
     "next-cloudinary": "^6.16.0",
+    "nodemailer": "^10.5.0",
     "nuqs": "^2.10.3",
     "qrcode.react": "^4.2.0",
     "react": "^19.0.0",
@@ -52,6 +56,7 @@
     "@tailwindcss/postcss": "^4.0.9",
     "@types/bcryptjs": "^2.4.6",
     "@types/node": "^22.13.4",
+    "@types/nodemailer": "^8.0.2",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
     "eslint": "^9.20.1",

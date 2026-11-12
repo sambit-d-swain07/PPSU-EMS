@@ -77,11 +77,12 @@ model Event {
 }
 
 model Registration {
-  id         String    @id @default(cuid())
-  eventId    String
-  userId     String
-  createdAt  DateTime  @default(now())
-  attendedAt DateTime?
+  id             String    @id @default(cuid())
+  eventId        String
+  userId         String
+  createdAt      DateTime  @default(now())
+  attendedAt     DateTime?
+  reminderSentAt DateTime?
 
   event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
   user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)

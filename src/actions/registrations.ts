@@ -3,6 +3,11 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { after } from "next/server";
+import { sendMail } from "@/lib/mail";
+import { RegistrationConfirmedEmail } from "@/components/emails/registration-confirmed";
+import { env } from "@/env";
+import * as React from "react";
 
 export async function registerForEventAction(eventId: string) {
   const session = await auth();
@@ -54,11 +59,37 @@ export async function registerForEventAction(eventId: string) {
         throw new Error("You are already registered for this event.");
       }
 
-      return await tx.registration.create({
+      const created = await tx.registration.create({
         data: {
           eventId,
           userId,
         },
+        include: {
+          user: { select: { name: true, email: true } },
+          event: {
+            select: {
+              title: true,
+              startsAt: true,
+              venue: { select: { name: true } },
+            },
+          },
+        },
+      });
+
+      return created;
+    });
+
+    after(async () => {
+      await sendMail({
+        to: result.user.email,
+        subject: `Registration Confirmed: ${result.event.title}`,
+        react: React.createElement(RegistrationConfirmedEmail, {
+          studentName: result.user.name,
+          eventTitle: result.event.title,
+          startsAt: result.event.startsAt,
+          venueName: result.event.venue.name,
+          ticketUrl: `${env.APP_URL}/student/registrations`,
+        }),
       });
     });
 

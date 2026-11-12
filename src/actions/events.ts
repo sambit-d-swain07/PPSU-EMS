@@ -12,6 +12,12 @@ import { EventStatus } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { findVenueClash } from "@/lib/venue-clash";
 import { format } from "date-fns";
+import { after } from "next/server";
+import { sendMail } from "@/lib/mail";
+import { EventReviewedEmail } from "@/components/emails/event-reviewed";
+import { EventSubmittedEmail } from "@/components/emails/event-submitted";
+import { env } from "@/env";
+import * as React from "react";
 
 export async function createEventAction(
   data: EventFormInput,
@@ -68,6 +74,31 @@ export async function createEventAction(
         organizerId: session.user.id,
       },
     });
+
+    if (submitForApproval) {
+      after(async () => {
+        const reviewers = await prisma.user.findMany({
+          where: { role: { in: ["FACULTY", "ADMIN"] }, isActive: true },
+          select: { email: true },
+        });
+
+        if (reviewers.length > 0) {
+          const bccList = reviewers.map((r) => r.email);
+          await sendMail({
+            bcc: bccList,
+            subject: `New Event Pending Review: ${event.title}`,
+            react: React.createElement(EventSubmittedEmail, {
+              eventTitle: event.title,
+              organizerName: session.user.name || "Organizer",
+              category: event.category,
+              venueName: venue.name,
+              startsAt: event.startsAt,
+              approvalUrl: `${env.APP_URL}/faculty`,
+            }),
+          });
+        }
+      });
+    }
 
     revalidatePath("/organizer");
     revalidatePath("/faculty");
@@ -137,7 +168,7 @@ export async function updateEventAction(
   const status: EventStatus = submitForApproval ? "PENDING" : "DRAFT";
 
   try {
-    await prisma.event.update({
+    const updated = await prisma.event.update({
       where: { id: eventId },
       data: {
         title: parsed.data.title,
@@ -152,6 +183,31 @@ export async function updateEventAction(
         reviewRemark: null,
       },
     });
+
+    if (submitForApproval) {
+      after(async () => {
+        const reviewers = await prisma.user.findMany({
+          where: { role: { in: ["FACULTY", "ADMIN"] }, isActive: true },
+          select: { email: true },
+        });
+
+        if (reviewers.length > 0) {
+          const bccList = reviewers.map((r) => r.email);
+          await sendMail({
+            bcc: bccList,
+            subject: `Event Resubmitted for Review: ${updated.title}`,
+            react: React.createElement(EventSubmittedEmail, {
+              eventTitle: updated.title,
+              organizerName: session.user.name || "Organizer",
+              category: updated.category,
+              venueName: venue.name,
+              startsAt: updated.startsAt,
+              approvalUrl: `${env.APP_URL}/faculty`,
+            }),
+          });
+        }
+      });
+    }
 
     revalidatePath("/organizer");
     revalidatePath(`/organizer/events/${eventId}/edit`);
@@ -182,7 +238,10 @@ export async function reviewEventAction(input: ReviewEventInput) {
 
   const event = await prisma.event.findUnique({
     where: { id: parsed.data.eventId },
-    include: { venue: true },
+    include: {
+      venue: true,
+      organizer: { select: { email: true, name: true } },
+    },
   });
 
   if (!event) {
@@ -219,6 +278,20 @@ export async function reviewEventAction(input: ReviewEventInput) {
           parsed.data.action === "REJECT" ? parsed.data.remark : null,
         reviewedById: session.user.id,
       },
+    });
+
+    after(async () => {
+      await sendMail({
+        to: event.organizer.email,
+        subject: `Event ${newStatus === "APPROVED" ? "Approved" : "Update"}: ${event.title}`,
+        react: React.createElement(EventReviewedEmail, {
+          organizerName: event.organizer.name,
+          eventTitle: event.title,
+          status: newStatus,
+          remark: parsed.data.action === "REJECT" ? parsed.data.remark : null,
+          dashboardUrl: `${env.APP_URL}/organizer`,
+        }),
+      });
     });
 
     revalidatePath("/faculty");

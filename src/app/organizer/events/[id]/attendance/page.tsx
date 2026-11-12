@@ -91,3 +91,4 @@ export default async function AttendancePage({ params }: AttendancePageProps) {
     </div>
   );
 }
+
