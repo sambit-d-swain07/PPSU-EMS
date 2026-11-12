@@ -15,16 +15,33 @@ const ROLE_PATHS = ["/admin", "/organizer", "/student"];
 export default auth((req) => {
   const { nextUrl } = req;
   const isLoggedIn = !!req.auth;
-  const userRole = req.auth?.user?.role as string | undefined;
+  const user = req.auth?.user;
+  const userRole = user?.role as string | undefined;
+  const isActive = user?.isActive ?? true;
+  const mustChangePassword = user?.mustChangePassword ?? false;
   const targetDashboard = userRole ? ROLE_DASHBOARDS[userRole] : undefined;
 
   const isLoginPage = nextUrl.pathname === "/login";
+  const isChangePasswordPage = nextUrl.pathname === "/account/password";
 
   if (!isLoggedIn) {
     if (isLoginPage) {
       return NextResponse.next();
     }
     return NextResponse.redirect(new URL("/login", nextUrl.origin));
+  }
+
+  // Deactivated user
+  if (!isActive) {
+    return NextResponse.redirect(new URL("/login?error=deactivated", nextUrl.origin));
+  }
+
+  // Force password change
+  if (mustChangePassword) {
+    if (!isChangePasswordPage) {
+      return NextResponse.redirect(new URL("/account/password", nextUrl.origin));
+    }
+    return NextResponse.next();
   }
 
   if (isLoginPage || nextUrl.pathname === "/") {

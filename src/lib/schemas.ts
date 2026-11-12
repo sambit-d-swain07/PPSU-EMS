@@ -94,3 +94,57 @@ export const reviewEventSchema = z.object({
 );
 
 export type ReviewEventInput = z.infer<typeof reviewEventSchema>;
+
+export const changePasswordSchema = z
+  .object({
+    currentPassword: z.string().min(1, "Current password is required."),
+    newPassword: z.string().min(8, "New password must be at least 8 characters long."),
+    confirmPassword: z.string().min(1, "Please confirm your new password."),
+  })
+  .refine((data) => data.newPassword !== data.currentPassword, {
+    message: "New password must differ from current password.",
+    path: ["newPassword"],
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: "Passwords do not match.",
+    path: ["confirmPassword"],
+  });
+
+export type ChangePasswordInput = z.infer<typeof changePasswordSchema>;
+
+export const userRoleEnum = ["ADMIN", "ORGANIZER", "STUDENT"] as const;
+
+export const createUserSchema = z.object({
+  name: z.string().min(1, "Name is required."),
+  email: z.string().email("Please enter a valid email address."),
+  password: z.string().min(8, "Password must be at least 8 characters long."),
+  role: z.enum(userRoleEnum, { errorMap: () => ({ message: "Please select a valid role." }) }),
+  department: z.string().optional().nullable(),
+});
+
+export type CreateUserInput = z.infer<typeof createUserSchema>;
+
+export const editUserSchema = z.object({
+  name: z.string().min(1, "Name is required."),
+  role: z.enum(userRoleEnum, { errorMap: () => ({ message: "Please select a valid role." }) }),
+  department: z.string().optional().nullable(),
+});
+
+export type EditUserInput = z.infer<typeof editUserSchema>;
+
+export const resetUserPasswordSchema = z.object({
+  password: z.string().min(8, "Password must be at least 8 characters long."),
+});
+
+export type ResetUserPasswordInput = z.infer<typeof resetUserPasswordSchema>;
+
+export const csvUserRowSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  email: z.string().email("Invalid email"),
+  password: z.string().min(8, "Min 8 characters"),
+  role: z.enum(userRoleEnum, { errorMap: () => ({ message: "Role must be ADMIN, ORGANIZER, or STUDENT" }) }),
+  department: z.string().optional().nullable(),
+});
+
+export type CsvUserRow = z.infer<typeof csvUserRowSchema>;
+

@@ -4,6 +4,9 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { venueFormSchema, type VenueFormInput } from "@/lib/schemas";
 import { revalidatePath } from "next/cache";
+import { z } from "zod";
+
+const venueIdSchema = z.string().min(1, "Venue ID is required.");
 
 export async function createVenueAction(data: VenueFormInput) {
   const session = await auth();
@@ -44,6 +47,11 @@ export async function deleteVenueAction(venueId: string) {
   const session = await auth();
   if (!session?.user || session.user.role !== "ADMIN") {
     return { error: "Unauthorized. Only admins can manage venues." };
+  }
+
+  const parsed = venueIdSchema.safeParse(venueId);
+  if (!parsed.success) {
+    return { error: "Invalid venue ID." };
   }
 
   try {

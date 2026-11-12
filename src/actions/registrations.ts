@@ -8,11 +8,19 @@ import { sendMail } from "@/lib/mail";
 import { RegistrationConfirmedEmail } from "@/components/emails/registration-confirmed";
 import { env } from "@/env";
 import * as React from "react";
+import { z } from "zod";
+
+const eventIdSchema = z.string().min(1, "Event ID is required.");
 
 export async function registerForEventAction(eventId: string) {
   const session = await auth();
   if (!session?.user || session.user.role !== "STUDENT") {
     return { error: "Unauthorized. Only students can register for events." };
+  }
+
+  const parsed = eventIdSchema.safeParse(eventId);
+  if (!parsed.success) {
+    return { error: "Invalid event ID." };
   }
 
   const userId = session.user.id;
@@ -113,6 +121,11 @@ export async function cancelRegistrationAction(eventId: string) {
   const session = await auth();
   if (!session?.user || session.user.role !== "STUDENT") {
     return { error: "Unauthorized. Only students can manage registrations." };
+  }
+
+  const parsed = eventIdSchema.safeParse(eventId);
+  if (!parsed.success) {
+    return { error: "Invalid event ID." };
   }
 
   const userId = session.user.id;

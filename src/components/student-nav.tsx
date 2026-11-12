@@ -3,8 +3,9 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LogoutButton } from "@/components/logout-button";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Calendar, Ticket } from "lucide-react";
+import { Calendar, Ticket, KeyRound } from "lucide-react";
 
 interface StudentNavProps {
   userName: string;
@@ -75,6 +76,12 @@ export function StudentNav({ userName }: StudentNavProps) {
           <span className="text-xs text-slate-600 hidden md:inline">
             Signed in as <strong>{userName}</strong>
           </span>
+          <Button variant="ghost" size="sm" asChild className="h-8 px-2 text-xs text-slate-600 hover:text-slate-900">
+            <Link href="/account/password" title="Change Password">
+              <KeyRound className="h-3.5 w-3.5 mr-1 text-slate-500" />
+              <span className="hidden sm:inline">Password</span>
+            </Link>
+          </Button>
           <LogoutButton />
         </div>
       </div>

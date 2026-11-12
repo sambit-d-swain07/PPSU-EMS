@@ -119,6 +119,10 @@ export async function updateEventAction(
     return { error: "Unauthorized. Only organizers can update events." };
   }
 
+  if (!eventId || typeof eventId !== "string") {
+    return { error: "Invalid event ID." };
+  }
+
   const existing = await prisma.event.findUnique({
     where: { id: eventId },
   });

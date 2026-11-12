@@ -31,18 +31,22 @@ enum EventStatus {
 }
 
 model User {
-  id           String   @id @default(cuid())
-  name         String
-  email        String   @unique
-  passwordHash String
-  role         Role
-  department   String?
-  isActive     Boolean  @default(true)
-  createdAt    DateTime @default(now())
+  id                 String   @id @default(cuid())
+  name               String
+  email              String   @unique
+  passwordHash       String
+  role               Role
+  department         String?
+  isActive           Boolean  @default(true)
+  mustChangePassword Boolean  @default(false)
+  createdAt          DateTime @default(now())
 
   organizedEvents Event[]        @relation("OrganizerEvents")
   reviewedEvents  Event[]        @relation("ReviewerEvents")
   registrations   Registration[]
+
+  @@index([role])
+  @@index([isActive])
 }
 
 model Venue {
@@ -73,6 +77,11 @@ model Event {
   organizer     User           @relation("OrganizerEvents", fields: [organizerId], references: [id])
   reviewedBy    User?          @relation("ReviewerEvents", fields: [reviewedById], references: [id])
   registrations Registration[]
+
+  @@index([status])
+  @@index([startsAt])
+  @@index([venueId])
+  @@index([organizerId])
 }
 
 model Registration {
@@ -88,6 +97,8 @@ model Registration {
   feedback Feedback?
 
   @@unique([eventId, userId])
+  @@index([eventId])
+  @@index([userId])
 }
 
 model Feedback {
