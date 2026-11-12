@@ -7,9 +7,18 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { TicketDialog } from "@/components/ticket-dialog";
+import { FeedbackDialog } from "@/components/feedback-dialog";
 import Link from "next/link";
 import { format } from "date-fns";
-import { Calendar, MapPin, ArrowRight, Ticket, CheckCircle2 } from "lucide-react";
+import {
+  Calendar,
+  MapPin,
+  ArrowRight,
+  Ticket,
+  CheckCircle2,
+  Award,
+  Check,
+} from "lucide-react";
 
 export default async function MyRegistrationsPage() {
   const session = await auth();
@@ -20,6 +29,9 @@ export default async function MyRegistrationsPage() {
   const registrations = await prisma.registration.findMany({
     where: { userId: session.user.id },
     include: {
+      feedback: {
+        select: { rating: true, comment: true },
+      },
       event: {
         include: {
           venue: {
@@ -55,7 +67,7 @@ export default async function MyRegistrationsPage() {
             My Event Registrations
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
-            View your confirmed event bookings, digital passes, and attendance history.
+            View your confirmed event bookings, digital passes, attendance, and certificates.
           </p>
         </div>
 
@@ -138,22 +150,27 @@ function RegistrationCard({
     id: string;
     createdAt: Date;
     attendedAt: Date | null;
+    feedback?: { rating: number; comment?: string | null } | null;
     event: {
       id: string;
       title: string;
       category: string;
       startsAt: Date;
+      endsAt: Date;
       venue: { name: string };
     };
   };
   isPast: boolean;
   studentName: string;
 }) {
+  const isEnded = new Date(reg.event.endsAt).getTime() <= Date.now();
+  const isEligibleForCert = Boolean(reg.attendedAt && isEnded);
+
   return (
     <Card className="bg-white border-slate-200 overflow-hidden shadow-2xs hover:shadow-xs transition-shadow flex flex-col justify-between">
       <CardContent className="p-5 space-y-4">
         <div className="flex items-start justify-between gap-3">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <Badge variant={isPast ? "outline" : "secondary"}>
               {reg.event.category}
             </Badge>
@@ -193,16 +210,49 @@ function RegistrationCard({
           </div>
         </div>
 
-        <div className="pt-2 flex items-center justify-between gap-2">
-          <TicketDialog
-            registrationId={reg.id}
-            eventTitle={reg.event.title}
-            startsAt={reg.event.startsAt}
-            venueName={reg.event.venue.name}
-            studentName={studentName}
-            attendedAt={reg.attendedAt}
-          />
-          <Button size="sm" variant="ghost" asChild className="text-xs">
+        {/* Action Row */}
+        <div className="pt-2 flex items-center justify-between gap-2 flex-wrap">
+          <div className="flex items-center gap-2 flex-wrap">
+            {!isPast && (
+              <TicketDialog
+                registrationId={reg.id}
+                eventTitle={reg.event.title}
+                startsAt={reg.event.startsAt}
+                venueName={reg.event.venue.name}
+                studentName={studentName}
+                attendedAt={reg.attendedAt}
+              />
+            )}
+
+            {isPast && isEligibleForCert && (
+              <Button size="sm" variant="outline" asChild className="text-xs h-8 gap-1.5 font-medium">
+                <a
+                  href={`/api/certificates/${reg.id}`}
+                  download
+                  title="Download Certificate of Participation"
+                >
+                  <Award className="h-3.5 w-3.5 text-amber-600" />
+                  Certificate
+                </a>
+              </Button>
+            )}
+
+            {isPast && isEligibleForCert && (
+              reg.feedback ? (
+                <Badge variant="outline" className="text-[11px] font-medium text-emerald-700 bg-emerald-50 border-emerald-200 gap-1 py-1">
+                  <Check className="h-3 w-3 text-emerald-600" />
+                  Feedback submitted ({reg.feedback.rating}★)
+                </Badge>
+              ) : (
+                <FeedbackDialog
+                  registrationId={reg.id}
+                  eventTitle={reg.event.title}
+                />
+              )
+            )}
+          </div>
+
+          <Button size="sm" variant="ghost" asChild className="text-xs ml-auto">
             <Link href={`/student/events/${reg.event.id}`}>
               Details <ArrowRight className="h-3.5 w-3.5 ml-1" />
             </Link>

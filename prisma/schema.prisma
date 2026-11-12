@@ -84,8 +84,19 @@ model Registration {
   attendedAt     DateTime?
   reminderSentAt DateTime?
 
-  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
-  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  event    Event     @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  feedback Feedback?
 
   @@unique([eventId, userId])
+}
+
+model Feedback {
+  id             String       @id @default(cuid())
+  registrationId String       @unique
+  rating         Int
+  comment        String?
+  createdAt      DateTime     @default(now())
+
+  registration   Registration @relation(fields: [registrationId], references: [id], onDelete: Cascade)
 }

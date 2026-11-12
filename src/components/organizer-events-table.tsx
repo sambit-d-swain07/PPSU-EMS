@@ -27,7 +27,7 @@ import {
 } from "@/components/ui/dialog";
 import { format } from "date-fns";
 import Link from "next/link";
-import { Edit, AlertCircle, PlusCircle, Users, QrCode } from "lucide-react";
+import { Edit, AlertCircle, PlusCircle, Users, QrCode, Star, MessageSquare } from "lucide-react";
 
 export type EventItem = {
   id: string;
@@ -46,6 +46,12 @@ export type EventItem = {
     id: string;
     createdAt: Date | string;
     attendedAt?: Date | string | null;
+    feedback?: {
+      id: string;
+      rating: number;
+      comment?: string | null;
+      createdAt: Date | string;
+    } | null;
     user: {
       id: string;
       name: string;
@@ -63,6 +69,8 @@ export function OrganizerEventsTable({ data }: OrganizerEventsTableProps) {
   const [remarkDialogEvent, setRemarkDialogEvent] =
     React.useState<EventItem | null>(null);
   const [registrationsDialogEvent, setRegistrationsDialogEvent] =
+    React.useState<EventItem | null>(null);
+  const [feedbackDialogEvent, setFeedbackDialogEvent] =
     React.useState<EventItem | null>(null);
 
   const columns = React.useMemo<ColumnDef<EventItem>[]>(
@@ -165,12 +173,25 @@ export function OrganizerEventsTable({ data }: OrganizerEventsTableProps) {
             row.original.status === "DRAFT" || row.original.status === "REJECTED";
 
           if (row.original.status === "APPROVED") {
+            const isEnded = new Date(row.original.endsAt).getTime() <= Date.now();
             return (
-              <Button size="sm" variant="default" className="text-xs h-8" asChild>
-                <Link href={`/organizer/events/${row.original.id}/attendance`}>
-                  <QrCode className="h-3.5 w-3.5 mr-1" /> Attendance
-                </Link>
-              </Button>
+              <div className="flex items-center gap-1.5 flex-wrap">
+                <Button size="sm" variant="default" className="text-xs h-8" asChild>
+                  <Link href={`/organizer/events/${row.original.id}/attendance`}>
+                    <QrCode className="h-3.5 w-3.5 mr-1" /> Attendance
+                  </Link>
+                </Button>
+                {isEnded && (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="text-xs h-8"
+                    onClick={() => setFeedbackDialogEvent(row.original)}
+                  >
+                    <MessageSquare className="h-3.5 w-3.5 mr-1 text-amber-600" /> Feedback
+                  </Button>
+                )}
+              </div>
             );
           }
 
@@ -404,6 +425,101 @@ export function OrganizerEventsTable({ data }: OrganizerEventsTableProps) {
           </DialogContent>
         </Dialog>
       )}
+
+      {/* Feedback Dialog */}
+      {feedbackDialogEvent && (() => {
+        const feedbacks = feedbackDialogEvent.registrations
+          ?.map((r) => r.feedback)
+          .filter((f): f is NonNullable<typeof f> => Boolean(f)) || [];
+        const avg = feedbacks.length
+          ? (feedbacks.reduce((acc, f) => acc + f.rating, 0) / feedbacks.length).toFixed(1)
+          : null;
+
+        return (
+          <Dialog
+            open={!!feedbackDialogEvent}
+            onOpenChange={(open) => {
+              if (!open) setFeedbackDialogEvent(null);
+            }}
+          >
+            <DialogContent className="max-w-2xl max-h-[80vh] flex flex-col">
+              <DialogHeader>
+                <div className="flex items-center justify-between gap-2">
+                  <DialogTitle className="text-lg font-bold text-slate-900">
+                    Attendee Feedback
+                  </DialogTitle>
+                  <div className="flex items-center gap-2">
+                    <Badge variant="outline" className="gap-1 font-semibold text-amber-700 bg-amber-50 border-amber-200">
+                      <Star className="h-3 w-3 fill-amber-500 text-amber-500" />
+                      {avg ? `${avg} / 5` : "No ratings"}
+                    </Badge>
+                    <Badge variant="secondary">
+                      {feedbacks.length} {feedbacks.length === 1 ? "response" : "responses"}
+                    </Badge>
+                  </div>
+                </div>
+                <DialogDescription className="text-xs">
+                  Anonymous student ratings and reviews for &quot;{feedbackDialogEvent.title}&quot;
+                </DialogDescription>
+              </DialogHeader>
+
+              <div className="overflow-y-auto flex-1 my-2 border rounded-md">
+                <Table>
+                  <TableHeader>
+                    <TableRow className="bg-slate-50/70">
+                      <TableHead className="w-24">Rating</TableHead>
+                      <TableHead>Comment</TableHead>
+                      <TableHead className="w-28 text-right">Date</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {feedbacks.length > 0 ? (
+                      feedbacks.map((f) => (
+                        <TableRow key={f.id}>
+                          <TableCell className="font-semibold text-amber-600">
+                            <span className="flex items-center gap-0.5">
+                              {Array.from({ length: f.rating }).map((_, i) => (
+                                <Star key={i} className="h-3 w-3 fill-amber-500 text-amber-500" />
+                              ))}
+                            </span>
+                          </TableCell>
+                          <TableCell className="text-xs text-slate-700 leading-relaxed">
+                            {f.comment || (
+                              <span className="text-slate-400 italic">No written comment</span>
+                            )}
+                          </TableCell>
+                          <TableCell className="text-right text-[11px] text-slate-500">
+                            {format(new Date(f.createdAt), "MMM d, yyyy")}
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    ) : (
+                      <TableRow>
+                        <TableCell
+                          colSpan={3}
+                          className="h-28 text-center text-muted-foreground text-xs"
+                        >
+                          No feedback has been submitted by attendees yet.
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </div>
+
+              <div className="flex justify-end pt-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setFeedbackDialogEvent(null)}
+                >
+                  Close
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
+        );
+      })()}
     </div>
   );
 }

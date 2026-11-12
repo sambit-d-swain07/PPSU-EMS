@@ -21,6 +21,14 @@ export default async function OrganizerPage() {
       },
       registrations: {
         include: {
+          feedback: {
+            select: {
+              id: true,
+              rating: true,
+              comment: true,
+              createdAt: true,
+            },
+          },
           user: {
             select: {
               id: true,
