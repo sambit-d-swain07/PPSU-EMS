@@ -6,6 +6,8 @@ import "@fontsource-variable/jetbrains-mono";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
+import { GlobalActionLoader } from "@/components/global-action-loader";
+import { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: "University Event Management System",
@@ -21,6 +23,9 @@ export default function RootLayout({
     <html lang="en" className="h-full antialiased">
       <body className="min-h-full flex flex-col font-sans text-ink bg-paper">
         <NuqsAdapter>{children}</NuqsAdapter>
+        <Suspense fallback={null}>
+          <GlobalActionLoader />
+        </Suspense>
         <Toaster
           position="bottom-right"
           toastOptions={{

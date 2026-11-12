@@ -125,7 +125,7 @@ export default async function StudentEventsPage({
     <div className="min-h-screen flex flex-col">
       <StudentNav userName={session.user.name || "Student"} />
 
-      <main className="max-w-6xl w-full mx-auto px-4 sm:px-6 py-8 flex-1 space-y-8">
+      <main className="max-w-7xl w-full mx-auto px-4 sm:px-8 py-8 flex-1 space-y-8">
         {/* Title Header */}
         <PixelHeading
           title="UPCOMING EVENTS"

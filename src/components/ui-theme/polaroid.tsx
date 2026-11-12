@@ -40,6 +40,7 @@ export function Polaroid({
             src={src}
             alt={alt}
             fill
+            unoptimized={Boolean(src.startsWith("data:") || src.startsWith("blob:"))}
             className="object-cover"
             sizes="(max-width: 768px) 100vw, 400px"
           />

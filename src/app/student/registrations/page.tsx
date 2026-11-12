@@ -6,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { TicketDialog } from "@/components/ticket-dialog";
 import { FeedbackDialog } from "@/components/feedback-dialog";
+import { CancelRegistrationButton } from "@/components/cancel-registration-button";
 import { Folder, type FolderColor } from "@/components/ui-theme/folder";
 import { Sticker } from "@/components/ui-theme/sticker";
 import { PixelHeading } from "@/components/ui-theme/pixel-heading";
@@ -60,7 +61,7 @@ export default async function MyRegistrationsPage() {
     <div className="min-h-screen flex flex-col">
       <StudentNav userName={studentName} />
 
-      <main className="max-w-5xl w-full mx-auto px-4 sm:px-6 py-8 flex-1 space-y-8">
+      <main className="max-w-6xl w-full mx-auto px-4 sm:px-8 py-8 flex-1 space-y-8">
         <PixelHeading
           title="MY TICKETS & PASSES"
           caption="✦ confirmed bookings and event records ✦"
@@ -218,14 +219,20 @@ function RegistrationFolderCard({
       <div className="pt-3 border-t border-ink/20 flex items-center justify-between gap-2 flex-wrap">
         <div className="flex items-center gap-2 flex-wrap">
           {!isPast && (
-            <TicketDialog
-              registrationId={reg.id}
-              eventTitle={reg.event.title}
-              startsAt={reg.event.startsAt}
-              venueName={reg.event.venue.name}
-              studentName={studentName}
-              attendedAt={reg.attendedAt}
-            />
+            <>
+              <TicketDialog
+                registrationId={reg.id}
+                eventTitle={reg.event.title}
+                startsAt={reg.event.startsAt}
+                venueName={reg.event.venue.name}
+                studentName={studentName}
+                attendedAt={reg.attendedAt}
+              />
+              <CancelRegistrationButton
+                eventId={reg.event.id}
+                eventTitle={reg.event.title}
+              />
+            </>
           )}
 
           {isPast && isEligibleForCert && (

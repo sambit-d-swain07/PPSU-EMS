@@ -44,6 +44,9 @@ export function ChangePasswordForm({
     startTransition(async () => {
       const res = await changePasswordAction(data);
       if (res.error) {
+        if (typeof window !== "undefined") {
+          window.dispatchEvent(new CustomEvent("hide-global-loader"));
+        }
         setServerError(res.error);
         toast.error(res.error);
       } else {

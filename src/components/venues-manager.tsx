@@ -64,6 +64,9 @@ export function VenuesManager({ venues }: VenuesManagerProps) {
     startTransition(async () => {
       const res = await createVenueAction(values);
       if (res.error) {
+        if (typeof window !== "undefined") {
+          window.dispatchEvent(new CustomEvent("hide-global-loader"));
+        }
         toast.error(res.error);
       } else {
         toast.success("Venue created successfully.");
@@ -77,11 +80,24 @@ export function VenuesManager({ venues }: VenuesManagerProps) {
     if (!confirm(`Are you sure you want to delete venue "${name}"?`)) return;
 
     startTransition(async () => {
-      const res = await deleteVenueAction(venueId);
-      if (res.error) {
-        toast.error(res.error);
-      } else {
-        toast.success("Venue deleted successfully.");
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(
+          new CustomEvent("show-global-loader", {
+            detail: { message: `Deleting venue "${name}"...` },
+          })
+        );
+      }
+      try {
+        const res = await deleteVenueAction(venueId);
+        if (res.error) {
+          toast.error(res.error);
+        } else {
+          toast.success("Venue deleted successfully.");
+        }
+      } finally {
+        if (typeof window !== "undefined") {
+          window.dispatchEvent(new CustomEvent("hide-global-loader"));
+        }
       }
     });
   };

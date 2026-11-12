@@ -103,27 +103,48 @@ export function EventForm({ venues, eventId, initialData }: EventFormProps) {
       }
 
       startTransition(async () => {
-        const result = eventId
-          ? await updateEventAction(eventId, values, submitForApproval)
-          : await createEventAction(values, submitForApproval);
-
-        if (result.error) {
-          toast.error(result.error);
-        } else {
-          toast.success(
-            submitForApproval
-              ? "Event submitted for approval."
-              : "Event saved as draft."
+        if (typeof window !== "undefined") {
+          window.dispatchEvent(
+            new CustomEvent("show-global-loader", {
+              detail: {
+                message: submitForApproval
+                  ? "Submitting proposal for admin approval..."
+                  : "Saving draft event to server...",
+              },
+            })
           );
-          router.push("/organizer");
-          router.refresh();
+        }
+
+        try {
+          const result = eventId
+            ? await updateEventAction(eventId, values, submitForApproval)
+            : await createEventAction(values, submitForApproval);
+
+          if (result.error) {
+            toast.error(result.error);
+            if (typeof window !== "undefined") {
+              window.dispatchEvent(new CustomEvent("hide-global-loader"));
+            }
+          } else {
+            toast.success(
+              submitForApproval
+                ? "Event submitted for approval."
+                : "Event saved as draft."
+            );
+            router.push("/organizer");
+            router.refresh();
+          }
+        } catch {
+          if (typeof window !== "undefined") {
+            window.dispatchEvent(new CustomEvent("hide-global-loader"));
+          }
         }
       });
     })();
   };
 
   return (
-    <div className="space-y-6 max-w-2xl">
+    <div className="space-y-6 max-w-3xl w-full mx-auto">
       <div className="flex items-center gap-2">
         <Button variant="outline" size="sm" asChild className="font-mono text-xs">
           <Link href="/organizer">

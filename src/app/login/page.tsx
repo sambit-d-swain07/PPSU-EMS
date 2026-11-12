@@ -38,6 +38,9 @@ export default function LoginPage() {
     startTransition(async () => {
       const result = await loginAction(values);
       if (result.error) {
+        if (typeof window !== "undefined") {
+          window.dispatchEvent(new CustomEvent("hide-global-loader"));
+        }
         setServerError(result.error);
       } else if (result.success) {
         window.location.href = "/";

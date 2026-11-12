@@ -41,22 +41,48 @@ export function RegistrationButton({
 
   const handleRegister = () => {
     startTransition(async () => {
-      const res = await registerForEventAction(eventId);
-      if (res.error) {
-        toast.error(res.error);
-      } else {
-        toast.success(`You are now registered for "${eventTitle}".`);
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(
+          new CustomEvent("show-global-loader", {
+            detail: { message: `Reserving your seat for "${eventTitle}"...` },
+          })
+        );
+      }
+      try {
+        const res = await registerForEventAction(eventId);
+        if (res.error) {
+          toast.error(res.error);
+        } else {
+          toast.success(`You are now registered for "${eventTitle}".`);
+        }
+      } finally {
+        if (typeof window !== "undefined") {
+          window.dispatchEvent(new CustomEvent("hide-global-loader"));
+        }
       }
     });
   };
 
   const handleCancel = () => {
     startTransition(async () => {
-      const res = await cancelRegistrationAction(eventId);
-      if (res.error) {
-        toast.error(res.error);
-      } else {
-        toast.success("Your registration has been cancelled.");
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(
+          new CustomEvent("show-global-loader", {
+            detail: { message: "Cancelling your registration..." },
+          })
+        );
+      }
+      try {
+        const res = await cancelRegistrationAction(eventId);
+        if (res.error) {
+          toast.error(res.error);
+        } else {
+          toast.success("Your registration has been cancelled.");
+        }
+      } finally {
+        if (typeof window !== "undefined") {
+          window.dispatchEvent(new CustomEvent("hide-global-loader"));
+        }
       }
     });
   };

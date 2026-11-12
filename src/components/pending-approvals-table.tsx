@@ -70,15 +70,28 @@ export function PendingApprovalsTable({ data }: PendingApprovalsTableProps) {
 
   const handleApprove = (eventId: string) => {
     startTransition(async () => {
-      const res = await reviewEventAction({
-        eventId,
-        action: "APPROVE",
-      });
-      if (res.error) {
-        toast.error(res.error);
-      } else {
-        toast.success("Event approved successfully.");
-        setSelectedEvent(null);
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(
+          new CustomEvent("show-global-loader", {
+            detail: { message: "Approving event proposal..." },
+          })
+        );
+      }
+      try {
+        const res = await reviewEventAction({
+          eventId,
+          action: "APPROVE",
+        });
+        if (res.error) {
+          toast.error(res.error);
+        } else {
+          toast.success("Event approved successfully.");
+          setSelectedEvent(null);
+        }
+      } finally {
+        if (typeof window !== "undefined") {
+          window.dispatchEvent(new CustomEvent("hide-global-loader"));
+        }
       }
     });
   };
@@ -91,18 +104,31 @@ export function PendingApprovalsTable({ data }: PendingApprovalsTableProps) {
     }
 
     startTransition(async () => {
-      const res = await reviewEventAction({
-        eventId: rejectingEvent.id,
-        action: "REJECT",
-        remark: remark.trim(),
-      });
-      if (res.error) {
-        toast.error(res.error);
-      } else {
-        toast.success("Event rejected with remark.");
-        setRejectingEvent(null);
-        setSelectedEvent(null);
-        setRemark("");
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(
+          new CustomEvent("show-global-loader", {
+            detail: { message: "Rejecting event proposal..." },
+          })
+        );
+      }
+      try {
+        const res = await reviewEventAction({
+          eventId: rejectingEvent.id,
+          action: "REJECT",
+          remark: remark.trim(),
+        });
+        if (res.error) {
+          toast.error(res.error);
+        } else {
+          toast.success("Event rejected with remark.");
+          setRejectingEvent(null);
+          setSelectedEvent(null);
+          setRemark("");
+        }
+      } finally {
+        if (typeof window !== "undefined") {
+          window.dispatchEvent(new CustomEvent("hide-global-loader"));
+        }
       }
     });
   };
@@ -304,6 +330,7 @@ export function PendingApprovalsTable({ data }: PendingApprovalsTableProps) {
                     src={selectedEvent.posterUrl}
                     alt={selectedEvent.title}
                     fill
+                    unoptimized={Boolean(selectedEvent.posterUrl.startsWith("data:") || selectedEvent.posterUrl.startsWith("blob:"))}
                     className="object-cover"
                   />
                 </div>
